@@ -1,19 +1,11 @@
 from django.contrib import admin
-from .models import Administrador, Atendente, Medico, Paciente, Consulta, AvisoAusencia
-
-
-@admin.register(Administrador)
-class AdministradorAdmin(admin.ModelAdmin):
-    list_display = ("nome", "email", "senha")
-    search_fields = ("nome", "email", "senha")
-
+from .models import Atendente, Medico, Paciente, Consulta, AvisoAusencia
 
 @admin.register(Atendente)
 class AtendenteAdmin(admin.ModelAdmin):
     list_display = ("nome", "cpf", "data_nascimento", "endereco")
     search_fields = ("nome", "cpf")
     list_filter = ("data_nascimento",)
-
 
 @admin.register(Medico)
 class MedicoAdmin(admin.ModelAdmin):
