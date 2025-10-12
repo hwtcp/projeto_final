@@ -1,35 +1,44 @@
 from django.db import models
+from django.contrib.auth.models import AbstractUser
+from django.conf import settings
+
+class Usuario(AbstractUser):
+    nome_completo = models.CharField(max_length=150)
+    cpf = models.CharField(max_length=14, unique=True)
+    data_nascimento = models.DateField(null=True, blank=True)
+    endereco = models.CharField(max_length=200, blank=True)
+    telefone = models.CharField(max_length=15, blank=True, null=True)
+
+    TIPO_USUARIO = [
+        ('medico', 'Médico'),
+        ('atendente', 'Atendente'),
+        ('paciente', 'Paciente'),
+    ]
+    tipo = models.CharField(max_length=20, choices=TIPO_USUARIO)
+
+    def __str__(self):
+        return f"{self.username} ({self.get_tipo_display()})"
+    
+class Medico(models.Model):
+    usuario = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    crm = models.CharField(max_length=20, unique=True)
+    especialidade = models.CharField(max_length=100)
+
+    def __str__(self):
+        return f"Dr(a). {self.usuario.first_name} - {self.crm}"
 
 class Atendente(models.Model):
-    nome = models.CharField(max_length=100)
-    cpf = models.CharField(max_length=14, unique=True)
-    data_nascimento = models.DateField()
-    endereco = models.CharField(max_length=200)
+    usuario = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
 
     def __str__(self):
-        return self.nome
-
-class Medico(models.Model):
-    nome = models.CharField(max_length=100)
-    cpf = models.CharField(max_length=14, unique=True)
-    crm = models.CharField(max_length=20, unique=True)
-    data_nascimento = models.DateField()
-    endereco = models.CharField(max_length=200)
-    especialidade = models.CharField(max_length=100) 
-
-    def __str__(self):
-        return f"Dr(a). {self.nome} - {self.crm}"
+        return self.usuario.first_name
 
 class Paciente(models.Model):
-    nome = models.CharField(max_length=100)
-    cpf = models.CharField(max_length=14, unique=True)
-    endereco = models.CharField(max_length=200)
-    data_nascimento = models.DateField()
-    telefone = models.CharField(max_length=15)
-    email = models.EmailField(blank=True, null=True)
+    usuario = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
 
     def __str__(self):
-        return self.nome
+        return self.usuario.first_name
+
 
 class Consulta(models.Model):
     paciente = models.ForeignKey(Paciente, on_delete=models.CASCADE)

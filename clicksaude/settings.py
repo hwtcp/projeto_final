@@ -111,11 +111,16 @@ USE_I18N = True
 
 USE_TZ = True
 
+AUTH_USER_MODEL = 'core.Usuario'
+
+LOGIN_URL = 'login' 
+LOGIN_REDIRECT_URL = 'home'
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.2/howto/static-files/
 
 STATIC_URL = 'static/'
+STATICFILES_DIRS = [BASE_DIR / 'core' / 'static']
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
