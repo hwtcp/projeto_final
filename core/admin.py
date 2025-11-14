@@ -1,46 +1,73 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
-from .models import Usuario, Medico, Paciente, Atendente, Consulta, AvisoAusencia
+from .models import Usuario, Medico, Paciente, Atendente, Especialidade
+
 
 @admin.register(Usuario)
 class UsuarioAdmin(UserAdmin):
     model = Usuario
-    list_display = ['username', 'email', 'first_name', 'last_name', 'tipo', 'is_staff', 'is_active']
-    list_filter = ['tipo', 'is_staff', 'is_active']
-    fieldsets = UserAdmin.fieldsets + (
-        ('Informações adicionais', {
-            'fields': ('cpf', 'data_nascimento', 'endereco', 'telefone', 'tipo'),
+    list_display = ('nome_completo', 'email', 'cpf', 'tipo', 'is_active', 'is_staff')
+    list_filter = ('tipo', 'is_active', 'is_staff')
+    search_fields = ('nome_completo', 'cpf', 'email')
+    ordering = ('nome_completo',)
+
+    fieldsets = (
+        ('Informações de Login', {'fields': ('username', 'password')}),
+        ('Informações Pessoais', {
+            'fields': ('nome_completo', 'email', 'cpf', 'data_nascimento', 'endereco', 'telefone')
+        }),
+        ('Função', {'fields': ('tipo',)}),
+        ('Permissões', {
+            'fields': ('is_staff', 'is_active', 'is_superuser', 'groups', 'user_permissions')
+        }),
+        ('Datas Importantes', {'fields': ('last_login', 'date_joined')}),
+    )
+
+    add_fieldsets = (
+        (None, {
+            'classes': ('wide',),
+            'fields': (
+                'username', 'password1', 'password2',
+                'nome_completo', 'email', 'cpf',
+                'data_nascimento', 'endereco', 'telefone', 'tipo',
+                'is_staff', 'is_active'
+            ),
         }),
     )
-    add_fieldsets = UserAdmin.add_fieldsets + (
-        ('Informações adicionais', {
-            'fields': ('cpf', 'data_nascimento', 'endereco', 'telefone', 'tipo'),
-        }),
-    )
-    search_fields = ['username', 'email', 'cpf']
-    ordering = ['username']
+
 
 @admin.register(Medico)
 class MedicoAdmin(admin.ModelAdmin):
-    list_display = ['get_nome', 'get_cpf', 'crm', 'especialidade']
-    search_fields = ['usuario__nome', 'usuario__cpf', 'crm', 'especialidade']
-    list_filter = ['especialidade']
+    list_display = ('get_nome', 'get_cpf', 'crm', 'get_especialidade')
+    search_fields = ('usuario__nome_completo', 'usuario__cpf', 'crm', 'especialidade__nome')
+    list_filter = ['especialidade__nome']
+
+    def get_especialidade(self, obj):
+        return obj.especialidade.nome if obj.especialidade else "-"
+    get_especialidade.short_description = "Especialidade"
 
     def get_nome(self, obj):
-        return obj.usuario.nome
+        return obj.usuario.nome_completo
     get_nome.short_description = 'Nome'
 
     def get_cpf(self, obj):
         return obj.usuario.cpf
     get_cpf.short_description = 'CPF'
 
+
 @admin.register(Paciente)
 class PacienteAdmin(admin.ModelAdmin):
-    list_display = ['get_nome', 'get_cpf', 'get_telefone', 'get_email']
-    search_fields = ['usuario__nome', 'usuario__cpf', 'usuario__telefone', 'usuario__email']
+    list_display = ('get_nome', 'get_cpf', 'peso', 'altura', 'get_telefone', 'get_email')
+    search_fields = ('usuario__nome_completo', 'usuario__cpf', 'usuario__telefone', 'usuario__email')
+
+    fieldsets = (
+        ('Informações Pessoais', {
+            'fields': ('usuario', 'peso', 'altura', 'historico_medico')
+        }),
+    )
 
     def get_nome(self, obj):
-        return obj.usuario.nome
+        return obj.usuario.nome_completo
     get_nome.short_description = 'Nome'
 
     def get_cpf(self, obj):
@@ -55,13 +82,14 @@ class PacienteAdmin(admin.ModelAdmin):
         return obj.usuario.email
     get_email.short_description = 'Email'
 
+
 @admin.register(Atendente)
 class AtendenteAdmin(admin.ModelAdmin):
-    list_display = ['get_nome', 'get_cpf', 'get_data_nascimento', 'get_endereco']
-    search_fields = ['usuario__nome', 'usuario__cpf']
+    list_display = ('get_nome', 'get_cpf', 'get_data_nascimento', 'get_endereco')
+    search_fields = ('usuario__nome_completo', 'usuario__cpf')
 
     def get_nome(self, obj):
-        return obj.usuario.nome
+        return obj.usuario.nome_completo
     get_nome.short_description = 'Nome'
 
     def get_cpf(self, obj):
@@ -76,14 +104,11 @@ class AtendenteAdmin(admin.ModelAdmin):
         return obj.usuario.endereco
     get_endereco.short_description = 'Endereço'
 
-@admin.register(Consulta)
-class ConsultaAdmin(admin.ModelAdmin):
-    list_display = ['paciente', 'medico', 'data', 'retorno']
-    search_fields = ['paciente__usuario__nome', 'medico__usuario__nome']
-    list_filter = ['data', 'retorno']
 
-@admin.register(AvisoAusencia)
-class AvisoAusenciaAdmin(admin.ModelAdmin):
-    list_display = ['medico', 'data_inicio', 'data_fim', 'motivo']
-    search_fields = ['medico__usuario__nome', 'motivo']
-    list_filter = ['data_inicio', 'data_fim']
+@admin.register(Especialidade)
+class EspecialidadeAdmin(admin.ModelAdmin):
+    list_display = ('nome',)
+    search_fields = ('nome',)
+
+
+

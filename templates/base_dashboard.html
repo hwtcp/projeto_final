@@ -1,0 +1,75 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<link rel="stylesheet" href="{% static 'css/home.css' %}">
+
+<div class="dashboard-container">
+    <div class="sidebar">
+        <h2>ClickSaúde</h2>
+
+        {% if user.is_superuser or user.tipo == 'admin' %}
+            <a href="{% url 'home' %}" class="{% if request.path == '/home/' %}active{% endif %}">
+                <i class="fa fa-user"></i> Meu Perfil
+            </a>
+            <a href="{% url 'listar_medicos' %}" class="{% if '/medicos/' in request.path %}active{% endif %}">
+                <i class="fa fa-user-md"></i> Médicos
+            </a>
+            <a href="{% url 'listar_atendentes' %}" class="{% if '/atendentes/' in request.path %}active{% endif %}">
+                <i class="fa fa-headset"></i> Atendentes
+            </a>
+            <a href="{% url 'listar_pacientes' %}" class="{% if '/pacientes/' in request.path %}active{% endif %}">
+                <i class="fa fa-users"></i> Pacientes
+            </a>
+            <a href="{% url 'listar_consultas' %}" class="{% if '/consultas/' in request.path %}active{% endif %}">
+                <i class="fa fa-calendar"></i> Consultas
+            </a>
+            <a href="{% url 'listar_avisos' %}" class="{% if '/avisos/' in request.path %}active{% endif %}">
+                <i class="fa fa-clock"></i> Avisos
+            </a>
+
+        {% elif user.tipo == 'medico' %}
+            <a href="{% url 'home' %}" class="{% if request.path == '/home/' %}active{% endif %}">
+                <i class="fa fa-user"></i> Meu Perfil
+            </a>
+            <a href="{% url 'listar_consultas' %}" class="{% if '/consultas/' in request.path %}active{% endif %}">
+                <i class="fa fa-calendar"></i> Minhas Consultas
+            </a>
+            <a href="{% url 'listar_avisos' %}" class="{% if '/avisos/' in request.path %}active{% endif %}">
+                <i class="fa fa-clock"></i> Avisos de Ausência
+            </a>
+
+        {% elif user.tipo == 'atendente' %}
+            <a href="{% url 'home' %}" class="{% if request.path == '/home/' %}active{% endif %}">
+                <i class="fa fa-user"></i> Meu Perfil
+            </a>
+            <a href="{% url 'listar_pacientes' %}" class="{% if '/pacientes/' in request.path %}active{% endif %}">
+                <i class="fa fa-users"></i> Pacientes
+            </a>
+            <a href="{% url 'listar_consultas' %}" class="{% if '/consultas/' in request.path %}active{% endif %}">
+                <i class="fa fa-calendar"></i> Consultas
+            </a>
+
+        {% elif user.tipo == 'paciente' %}
+            <a href="{% url 'home' %}" class="{% if request.path == '/home/' %}active{% endif %}">
+                <i class="fa fa-user"></i> Meu Perfil
+            </a>
+            <a href="{% url 'listar_consultas' %}" class="{% if '/consultas/' in request.path %}active{% endif %}">
+                <i class="fa fa-calendar"></i> Minhas Consultas
+            </a>
+        {% endif %}
+
+        <a href="{% url 'logout' %}" class="logout-btn">
+            <i class="fa fa-sign-out-alt"></i> Sair
+        </a>
+    </div>
+
+    <div class="content">
+        {% block dashboard_content %}
+        <!-- Aqui entra o conteúdo de cada página -->
+        {% endblock %}
+    </div>
+</div>
+
+<script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+{% endblock %}

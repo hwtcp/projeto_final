@@ -1,0 +1,110 @@
+.header-listagem {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 5px;
+    margin-top: 30px
+}
+
+.header-listagem h1 {
+    margin-left: 30px; 
+}
+
+.listagem-container {
+    padding-left: 30px;   
+    padding-right: 30px;  
+}
+
+
+.btn-add {
+    background-color: #94b594;
+    color: #063b10;
+    padding: 10px 18px;
+    border-radius: 8px;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 15px;
+    transition: 0.2s;
+    box-shadow: 0 3px 8px rgba(0,0,0,0.12);
+}
+
+.btn-add:hover {
+    background-color: #78a178; 
+    transform: translateY(-2px);
+}
+
+.table-wrapper {
+    overflow-x: auto;
+}
+
+.styled-table {
+    width: 100%;
+    border-collapse: collapse;
+    background: white;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+}
+
+
+.styled-table thead tr {
+    background-color: #dfeee3; 
+    color: #2e7d32;
+    font-weight: 700;
+    text-align: left;
+}
+
+.styled-table th,
+.styled-table td {
+    padding: 14px 16px;
+}
+
+.styled-table tbody tr {
+    border-bottom: 1px solid #f0f0f0;
+}
+
+.styled-table tbody tr:hover {
+    background-color: #eef6ef; 
+    transition: 0.2s;
+}
+
+.td-acoes {
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+}
+
+.btn-edit,
+.btn-delete {
+    padding: 6px 14px;
+    border-radius: 6px;
+    font-size: 14px;
+    font-weight: 600;
+    text-decoration: none;
+    transition: 0.2s;
+}
+
+.btn-edit {
+    background-color: #1565c0;
+    color: white;
+}
+
+.btn-edit:hover {
+    background-color: #0d47a1;
+}
+
+.btn-delete {
+    background-color: #e53935;
+    color: white;
+}
+
+.btn-delete:hover {
+    background-color: #c62828;
+}
+
+.no-data {
+    text-align: center;
+    padding: 30px;
+    color: #666;
+    font-style: italic;
+}

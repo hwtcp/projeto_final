@@ -1,0 +1,76 @@
+{% extends 'base_dashboard.html' %}
+{% load static %}
+
+{% block dashboard_content %}
+<link rel="stylesheet" href="{% static 'css/form.css' %}">
+
+<div class="form-sections">
+    <h1 style="text-align:center; color:#2e7d32; margin-bottom:30px;">Cadastro de Médico</h1>
+
+   <form method="POST" action="">
+        {% csrf_token %}
+
+        {% if form.errors %}
+            <pre style="background:#fee;border:1px solid #f00;padding:15px;margin-bottom:20px;">
+                {{ form.errors }}
+            </pre>
+        {% endif %}
+
+        <h2 class="section-title">Informações Pessoais</h2>
+        <div class="form-row">
+            <div class="form-group">
+                <label for="id_nome_completo">Nome completo</label>
+                {{ form.nome_completo }}
+            </div>
+            <div class="form-group">
+                <label for="id_data_nascimento">Data de Nascimento</label>
+                {{ form.data_nascimento }}
+            </div>
+        </div>
+
+        <div class="form-row">
+            <div class="form-group">
+                <label for="id_cpf">CPF</label>
+                {{ form.cpf }}
+            </div>
+            <div class="form-group">
+                <label for="id_telefone">Telefone</label>
+                {{ form.telefone }}
+            </div>
+            <div class="form-group">
+                <label for="id_email">E-mail</label>
+                {{ form.email }}
+                {{ form.email.errors }}
+            </div>
+
+        </div>
+
+        <h2 class="section-title">Informações Profissionais</h2>
+        <div class="form-row">
+            <div class="form-group">
+                <label for="id_crm">CRM</label>
+                {{ form.crm }}
+            </div>
+            <div class="form-group">
+                <label for="id_especialidade">Especialidade</label>
+                {{ form.especialidade }}
+            </div>
+        </div>
+
+        <h2 class="section-title">Endereço</h2>
+        <div class="form-row">
+            <div class="form-group">
+                <label for="id_endereco">Endereço</label>
+                {{ form.endereco }}
+            </div>
+        </div>
+
+        <div class="buttons-left">
+            <button type="submit" class="btn-save">Salvar</button>
+            <a href="{% url 'listar_medicos' %}" class="btn-cancel">Cancelar</a>
+        </div>
+
+    </form>
+</div>
+{% endblock %}
+

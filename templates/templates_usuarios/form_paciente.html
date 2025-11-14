@@ -1,0 +1,95 @@
+{% extends 'base_dashboard.html' %}
+{% load static %}
+
+{% block dashboard_content %}
+<link rel="stylesheet" href="{% static 'css/form.css' %}">
+
+<div class="form-sections">
+    <h1 style="text-align:center; color:#2e7d32; margin-bottom:30px;">
+        Cadastro de Paciente
+    </h1>
+
+    <form method="POST">
+        {% csrf_token %}
+
+        <!-- ====================== INFORMAÇÕES PESSOAIS ====================== -->
+        <h2 class="section-title">Informações Pessoais</h2>
+
+        <div class="form-row">
+            <div class="form-group">
+                <label for="id_nome_completo">Nome completo</label>
+                {{ form.nome_completo }}
+                {{ form.nome_completo.errors }}
+            </div>
+
+            <div class="form-group">
+                <label for="id_data_nascimento">Data de Nascimento</label>
+                {{ form.data_nascimento }}
+                {{ form.data_nascimento.errors }}
+            </div>
+        </div>
+
+        <div class="form-row">
+            <div class="form-group">
+                <label for="id_cpf">CPF</label>
+                {{ form.cpf }}
+                {{ form.cpf.errors }}
+            </div>
+
+            <div class="form-group">
+                <label for="id_telefone">Telefone</label>
+                {{ form.telefone }}
+                {{ form.telefone.errors }}
+            </div>
+        </div>
+
+        <div class="form-row">
+            <div class="form-group">
+                <label for="id_email">E-mail</label>
+                {{ form.email }}
+                {{ form.email.errors }}
+            </div>
+
+            <div class="form-group">
+                <!-- espaço vazio pra manter alinhado -->
+            </div>
+        </div>
+
+        <!-- ====================== ENDEREÇO ====================== -->
+        <h2 class="section-title">Endereço</h2>
+
+        <div class="form-row">
+            <div class="form-group">
+                <label for="id_endereco">Endereço</label>
+                {{ form.endereco }}
+                {{ form.endereco.errors }}
+            </div>
+        </div>
+
+        <!-- ====================== INFORMAÇÕES DE SAÚDE ====================== -->
+        <h2 class="section-title">Informações de Saúde</h2>
+
+        <div class="form-row">
+            <div class="form-group">
+                <label for="id_peso">Peso (kg)</label>
+                {{ form.peso }}
+                {{ form.peso.errors }}
+            </div>
+
+            <div class="form-group">
+                <label for="id_altura">Altura (m)</label>
+                {{ form.altura }}
+                {{ form.altura.errors }}
+            </div>
+        </div>
+
+        <!-- ======================== BOTÕES ======================== -->
+        <div class="buttons-left">
+            <button type="submit" class="btn-save">Salvar</button>
+            <a href="{% url 'listar_pacientes' %}" class="btn-cancel">Cancelar</a>
+        </div>
+
+    </form>
+</div>
+{% endblock %}
+
