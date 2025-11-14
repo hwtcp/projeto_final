@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+{% block content %}
+<h2 style="color:#2e7d32; font-weight:600;">{{ titulo }}</h2>
+
+<form method="post" style="max-width:600px;">
+    {% csrf_token %}
+    {{ form.as_p }}
+
+    <button type="submit" style="background-color:#2e7d32; color:white; padding:10px 20px; border:none; border-radius:8px;">Salvar</button>
+    <a href="{% url 'listar_avisos' %}" style="margin-left:10px; color:#1565c0;">Cancelar</a>
+</form>
+{% endblock %}

@@ -1,0 +1,43 @@
+{% extends 'base_dashboard.html' %}
+{% load static %}
+{% block dashboard_content %}
+<link rel="stylesheet" href="{% static 'css/listagem.css' %}">
+
+<div class="listagem-container">
+    <div class="header-listagem">
+        <h1>Atendentes</h1>
+        <a href="{% url 'criar_atendente' %}" class="btn-add">+ Novo Atendente</a>
+    </div>
+
+<div class="table-wrapper">
+    <table class="styled-table">
+        <thead>
+            <tr>
+                <th>Nome</th>
+                <th>CPF</th>
+                <th>Telefone</th>
+                <th style="text-align:center;">Ações</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for atendente in atendentes %}
+            <tr>
+                <td>{{ atendente.usuario.nome_completo }}</td>
+                <td>{{ atendente.usuario.cpf }}</td>
+                <td>{{ atendente.usuario.telefone }}</td>
+                <td class="td-acoes">
+                    <a href="{% url 'editar_atendente' atendente.pk %}" class="btn-edit">Editar</a>
+                    <a href="{% url 'deletar_atendente' atendente.pk %}" class="btn-delete">Excluir</a>
+                </td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="4" class="no-data">Nenhum atendente cadastrado.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}
+
+

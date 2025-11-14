@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+{% block content %}
+<h2 style="color:#2e7d32; font-weight:600;">Confirmação de Exclusão</h2>
+
+<p>Tem certeza de que deseja excluir este {{ tipo }}?</p>
+
+<form method="post">
+    {% csrf_token %}
+    <button type="submit" style="background-color:#c62828; color:white; padding:10px 20px; border:none; border-radius:8px;">Sim, excluir</button>
+    <a href="javascript:history.back()" style="margin-left:10px; color:#1565c0;">Cancelar</a>
+</form>
+{% endblock %}

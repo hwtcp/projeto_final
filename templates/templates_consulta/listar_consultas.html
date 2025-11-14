@@ -1,0 +1,34 @@
+{% extends 'base.html' %}
+{% block content %}
+<h2 style="color:#2e7d32; font-weight:600;">Consultas Cadastradas</h2>
+
+<a href="{% url 'criar_consulta' %}" style="background-color:#2e7d32; color:white; padding:10px 15px; border-radius:8px; text-decoration:none;">+ Nova Consulta</a>
+
+<table border="1" cellspacing="0" cellpadding="10" style="width:100%; margin-top:20px; border-collapse:collapse;">
+    <thead style="background-color:#e8f5e9;">
+        <tr>
+            <th>Paciente</th>
+            <th>Médico</th>
+            <th>Data</th>
+            <th>Retorno</th>
+            <th>Ações</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for consulta in consultas %}
+        <tr>
+            <td>{{ consulta.paciente }}</td>
+            <td>{{ consulta.medico }}</td>
+            <td>{{ consulta.data|date:"d/m/Y H:i" }}</td>
+            <td>{{ consulta.retorno|yesno:"Sim,Não" }}</td>
+            <td>
+                <a href="{% url 'editar_consulta' consulta.pk %}" style="color:#1565c0;">Editar</a> |
+                <a href="{% url 'deletar_consulta' consulta.pk %}" style="color:#c62828;">Excluir</a>
+            </td>
+        </tr>
+        {% empty %}
+        <tr><td colspan="5" style="text-align:center;">Nenhuma consulta cadastrada.</td></tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

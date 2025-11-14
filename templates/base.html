@@ -1,0 +1,64 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ClickSaúde</title>
+
+    <!-- Fontes -->
+    <link href="https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+    <!-- Ícones -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+    <!-- CSS principal -->
+    <link rel="stylesheet" href="{% static 'css/home.css' %}">
+
+    <style>
+        body {
+            font-family: 'Nunito Sans', sans-serif;
+        }
+
+        header {
+            background-color: #2e7d32;
+            color: white;
+            padding: 30px;
+            text-align: left; 
+        }
+
+        header h1 {
+            font-family: 'Poppins', sans-serif;
+            font-weight: 300; 
+            font-size: 42px;
+            margin: 0;
+            letter-spacing: 0.5px;
+        }
+
+        header p {
+            font-size: 18px;
+            margin-top: 5px;
+            font-family: 'Nunito Sans', sans-serif;
+            opacity: 0.9;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>ClickSaúde</h1>
+        <p>Sua saúde a um clique de distância</p>
+    </header>
+
+    <main style="padding:20px;">
+        {% block content %}
+        {% endblock %}
+    </main>
+
+</body>
+</html>
+
+
+
+

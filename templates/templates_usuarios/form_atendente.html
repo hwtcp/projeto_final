@@ -1,0 +1,65 @@
+{% extends 'base_dashboard.html' %}
+{% load static %}
+
+{% block dashboard_content %}
+<link rel="stylesheet" href="{% static 'css/form.css' %}">
+
+<div class="form-sections">
+    <h1 style="text-align:center; color:#2e7d32; margin-bottom:30px;">
+        Cadastro de Atendente
+    </h1>
+
+    <form method="POST" action="">
+        {% csrf_token %}
+
+        <div class="form-row">
+            <div class="form-group">
+                <label for="id_nome_completo">Nome completo</label>
+                {{ form.nome_completo }}
+                {{ form.nome_completo.errors }}
+            </div>
+
+            <div class="form-group">
+                <label for="id_data_nascimento">Data de Nascimento</label>
+                {{ form.data_nascimento }}
+                {{ form.data_nascimento.errors }}
+            </div>
+        </div>
+
+        <div class="form-row">
+            <div class="form-group">
+                <label for="id_cpf">CPF</label>
+                {{ form.cpf }}
+                {{ form.cpf.errors }}
+            </div>
+
+            <div class="form-group">
+                <label for="id_telefone">Telefone</label>
+                {{ form.telefone }}
+                {{ form.telefone.errors }}
+            </div>
+        </div>
+
+        <div class="form-row">
+            <div class="form-group">
+                <label for="id_email">E-mail</label>
+                {{ form.email }}
+                {{ form.email.errors }}
+            </div>
+
+            <div class="form-group">
+                <label for="id_endereco">Endereço</label>
+                {{ form.endereco }}
+                {{ form.endereco.errors }}
+            </div>
+        </div>
+
+        <div class="buttons-left">
+            <button type="submit" class="btn-save">Salvar</button>
+            <a href="{% url 'listar_atendentes' %}" class="btn-cancel">Cancelar</a>
+        </div>
+    </form>
+</div>
+{% endblock %}
+
+

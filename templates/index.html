@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div style="text-align:center; margin-top:60px;">
+    <h2 style="font-size:36px; color:#2e7d32; font-weight:600;">Bem-vindo ao ClickSaúde!</h2>
+    <p style="font-size:18px; color:#555; margin-top:15px;">
+        Gerencie consultas, pacientes e profissionais de forma simples e eficiente.<br>
+        A saúde digital está a um clique de distância.
+    </p>
+
+    <a href="{% url 'login' %}"
+       style="display:inline-block; background-color:#2e7d32; color:white; 
+              padding:12px 30px; border-radius:8px; text-decoration:none;
+              font-size:18px; font-weight:500; margin-top:25px; transition:0.3s;">
+        Entrar
+    </a>
+
+    <div style="margin-top:50px;">
+        <img src="{% static 'images/saude-ilustracao.png' %}" alt="Saúde digital"
+             style="max-width:450px; width:90%; border-radius:12px; box-shadow:0 2px 10px rgba(0,0,0,0.1);">
+    </div>
+</div>
+{% endblock %}
+
+
+
+
+
+

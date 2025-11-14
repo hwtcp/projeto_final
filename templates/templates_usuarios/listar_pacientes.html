@@ -1,0 +1,49 @@
+{% extends 'base_dashboard.html' %}
+{% load static %}
+
+{% block dashboard_content %}
+<link rel="stylesheet" href="{% static 'css/listagem.css' %}">
+
+<div class="listagem-container">
+
+    <div class="header-listagem">
+        <h1>Pacientes</h1>
+        <a href="{% url 'criar_paciente' %}" class="btn-add">+ Novo Paciente</a>
+    </div>
+
+    <div class="table-wrapper">
+        <table class="styled-table">
+            <thead>
+                <tr>
+                    <th>Nome</th>
+                    <th>CPF</th>
+                    <th>Telefone</th>
+                    <th style="text-align:center;">Ações</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                {% for paciente in pacientes %}
+                <tr>
+                    <td>{{ paciente.usuario.nome_completo }}</td>
+                    <td>{{ paciente.usuario.cpf }}</td>
+                    <td>{{ paciente.usuario.telefone }}</td>
+
+                    <td class="td-acoes">
+                        <a href="{% url 'editar_paciente' paciente.pk %}" class="btn-edit">Editar</a>
+                        <a href="{% url 'deletar_paciente' paciente.pk %}" class="btn-delete">Excluir</a>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="4" class="no-data">Nenhum paciente cadastrado.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+
+        </table>
+    </div>
+
+</div>
+{% endblock %}
+
