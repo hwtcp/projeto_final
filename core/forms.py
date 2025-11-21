@@ -198,17 +198,11 @@ def validar_cpf(cpf):
         return False
 
     def dv_calc(cpf_slice):
-        total = sum(
-            int(cpf_slice[i]) * (len(cpf_slice) + 1 - i)
-            for i in range(len(cpf_slice))
-        )
+        total = sum(int(cpf_slice[i]) * (len(cpf_slice) + 1 - i) for i in range(len(cpf_slice)))
         result = (total * 10) % 11
         return 0 if result == 10 else result
 
-    return (
-        dv_calc(cpf[:9]) == int(cpf[9])
-        and dv_calc(cpf[:10]) == int(cpf[10])
-    )
+    return dv_calc(cpf[:9]) == int(cpf[9]) and dv_calc(cpf[:10]) == int(cpf[10])
 
 
 class PerfilForm(forms.ModelForm):
@@ -252,9 +246,7 @@ class UsuarioFilterForm(forms.Form):
     nome = forms.CharField(
         required=False,
         label="Buscar por Nome",
-        widget=forms.TextInput(
-            attrs={"placeholder": "Nome completo..."}
-        ),
+        widget=forms.TextInput(attrs={"placeholder": "Nome completo..."}),
     )
     especialidade = forms.ModelChoiceField(
         queryset=Especialidade.objects.all().order_by("nome"),
@@ -265,7 +257,5 @@ class UsuarioFilterForm(forms.Form):
     cpf = forms.CharField(
         required=False,
         label="Buscar por CPF",
-        widget=forms.TextInput(
-            attrs={"placeholder": "000.000.000-00"}
-        ),
+        widget=forms.TextInput(attrs={"placeholder": "000.000.000-00"}),
     )

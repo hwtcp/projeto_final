@@ -31,5 +31,3 @@ class ConsultaAdmin(admin.ModelAdmin):
     @admin.display(description="Data")
     def data_formatada(self, obj):
         return obj.data.strftime("%d/%m/%Y %H:%M")
-
-

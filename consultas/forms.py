@@ -2,6 +2,7 @@ from django import forms
 from .models import Consulta, HorarioTrabalho
 from core.models import Medico, Paciente
 
+
 class HorarioTrabalhoForm(forms.ModelForm):
     class Meta:
         model = HorarioTrabalho
