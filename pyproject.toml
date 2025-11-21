@@ -3,11 +3,12 @@ requires = ["setuptools>=61.0", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "Feeder"
+name = "projeto_final"
 version = "0.1.0"
 description = "Projeto para atividade com o toml"
 authors = [
-    { name = "Gabrielle Ribeiro", email = "ribeiro.gabrielle@escolar.ifrn.edu.br" }
+    { name = "Gabrielle Ribeiro", 
+    email = "ribeiro.gabrielle@escolar.ifrn.edu.br" }
 
 readme = "README.md"
 requires-python = ">=3.10"
@@ -20,9 +21,9 @@ dependencies = [
 ]
 
 [project.urls]
-Homepage = "https://github.com/hwtcp/Feeder"
-Repository = "https://github.com/hwtcp/Feeder"
-"Bug Tracker" = "https://github.com/hwtcp/Feeder/issues"
+Homepage = "https://github.com/hwtcp/projeto_final"
+Repository = "https://github.com/hwtcp/projeto_final"
+"Bug Tracker" = "https://github.com/hwtcp/projeto_final/issues"
 
 [project.optional-dependencies]
 dev = [
