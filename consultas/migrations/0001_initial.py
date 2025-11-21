@@ -10,33 +10,56 @@ class Migration(migrations.Migration):
     initial = True
 
     dependencies = [
-        ('core', '0005_remove_consulta_medico_remove_consulta_paciente_and_more'),
+        ("core", "0005_remove_consulta_medico_remove_consulta_paciente_and_more"),
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='AvisoAusencia',
+            name="AvisoAusencia",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('data_inicio', models.DateTimeField()),
-                ('data_fim', models.DateTimeField()),
-                ('motivo', models.TextField()),
-                ('medico', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='core.medico')),
+                ("id", models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name="ID")),
+                ("data_inicio", models.DateTimeField()),
+                ("data_fim", models.DateTimeField()),
+                ("motivo", models.TextField()),
+                ("medico", models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to="core.medico")),
             ],
         ),
         migrations.CreateModel(
-            name='Consulta',
+            name="Consulta",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('data', models.DateTimeField()),
-                ('retorno', models.BooleanField(default=False)),
-                ('sintomas', models.TextField(blank=True, null=True)),
-                ('diagnostico', models.TextField(blank=True, null=True)),
-                ('receita_virtual', models.FileField(blank=True, null=True, upload_to='receitas/')),
-                ('status', models.CharField(choices=[('agendada', 'Agendada'), ('concluida', 'Concluída'), ('cancelada', 'Cancelada')], default='agendada', max_length=20)),
-                ('medico', models.ForeignKey(limit_choices_to={'tipo': 'medico'}, on_delete=django.db.models.deletion.CASCADE, related_name='consultas_medico', to=settings.AUTH_USER_MODEL)),
-                ('paciente', models.ForeignKey(limit_choices_to={'tipo': 'paciente'}, on_delete=django.db.models.deletion.CASCADE, related_name='consultas_paciente', to=settings.AUTH_USER_MODEL)),
+                ("id", models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name="ID")),
+                ("data", models.DateTimeField()),
+                ("retorno", models.BooleanField(default=False)),
+                ("sintomas", models.TextField(blank=True, null=True)),
+                ("diagnostico", models.TextField(blank=True, null=True)),
+                ("receita_virtual", models.FileField(blank=True, null=True, upload_to="receitas/")),
+                (
+                    "status",
+                    models.CharField(
+                        choices=[("agendada", "Agendada"), ("concluida", "Concluída"), ("cancelada", "Cancelada")],
+                        default="agendada",
+                        max_length=20,
+                    ),
+                ),
+                (
+                    "medico",
+                    models.ForeignKey(
+                        limit_choices_to={"tipo": "medico"},
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="consultas_medico",
+                        to=settings.AUTH_USER_MODEL,
+                    ),
+                ),
+                (
+                    "paciente",
+                    models.ForeignKey(
+                        limit_choices_to={"tipo": "paciente"},
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="consultas_paciente",
+                        to=settings.AUTH_USER_MODEL,
+                    ),
+                ),
             ],
         ),
     ]

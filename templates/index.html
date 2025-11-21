@@ -2,29 +2,69 @@
 {% load static %}
 
 {% block content %}
-<div style="text-align:center; margin-top:60px;">
-    <h2 style="font-size:36px; color:#2e7d32; font-weight:600;">Bem-vindo ao ClickSaúde!</h2>
-    <p style="font-size:18px; color:#555; margin-top:15px;">
-        Gerencie consultas, pacientes e profissionais de forma simples e eficiente.<br>
-        A saúde digital está a um clique de distância.
-    </p>
+<div class="main-content-container">
+    
+    <div class="hero-section">
+        <img src="{% static 'images/Clínico-Médico-scaled.jpg' %}" alt="Profissionais de saúde em atendimento" class="hero-image">
+        
+        <div class="hero-overlay">
+            <h2>Agende suas consultas de forma rápida e segura.</h2>
+            <p>Conectando você aos melhores profissionais de saúde.</p>
+            <a href="#" class="btn-cta">Ver Especialidades</a> 
+        </div>
+    </div>
 
-    <a href="{% url 'login' %}"
-       style="display:inline-block; background-color:#2e7d32; color:white; 
-              padding:12px 30px; border-radius:8px; text-decoration:none;
-              font-size:18px; font-weight:500; margin-top:25px; transition:0.3s;">
-        Entrar
-    </a>
+    <div class="login-card-container">
+        <div class="login-card">
+            <h3>Bem-vindo de volta!</h3>
+            
+            {% if form.errors %}
+                <div class="error-message">
+                    {% for field, errors in form.errors.items %}
+                        {% if field == '__all__' %}
+                            {% for error in errors %}
+                                <p>{{ error }}</p>
+                            {% endfor %}
+                        {% endif %}
+                    {% endfor %}
+                    
+                    {% if form.non_field_errors %}
+                        {% for error in form.non_field_errors %}
+                            <p>{{ error }}</p>
+                        {% endfor %}
+                    {% endif %}
+                </div>
+            {% endif %}
+            
+            <form method="post" action="{% url 'login' %}">
+                {% csrf_token %}
+                
+                <div class="input-group">
+                    <label for="id_username">Insira seu CPF:</label>
+                    <div class="input-field">
+                        <i class="fas fa-user-circle"></i>
+                        <input type="text" id="id_username" name="username" placeholder="Ex: 123.456.789-00" required>
+                    </div>
+                </div>
 
-    <div style="margin-top:50px;">
-        <img src="{% static 'images/saude-ilustracao.png' %}" alt="Saúde digital"
-             style="max-width:450px; width:90%; border-radius:12px; box-shadow:0 2px 10px rgba(0,0,0,0.1);">
+                <div class="input-group">
+                    <label for="id_password">Senha:</label>
+                    <div class="input-field">
+                        <i class="fas fa-lock"></i>
+                        <input type="password" id="id_password" name="password" placeholder="Sua senha secreta" required>
+                    </div>
+                </div>
+                
+                <button type="submit" class="btn-login">Entrar</button>
+
+            </form>
+            <p class="register-link">
+                Não tem uma conta? 
+                <a href="{% url 'auto_cadastro_paciente' %}">Crie agora</a>
+            </p>
+            <p class="forgot-password-link"><a href="#">Esqueci minha senha</a></p>
+        </div>
     </div>
 </div>
-{% endblock %}
-
-
-
-
-
+{% endblock content %}
 

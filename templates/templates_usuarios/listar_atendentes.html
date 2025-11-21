@@ -1,43 +1,152 @@
 {% extends 'base_dashboard.html' %}
 {% load static %}
+
 {% block dashboard_content %}
 <link rel="stylesheet" href="{% static 'css/listagem.css' %}">
 
+<style>
+    /* -------------------------------------- */
+    /* CSS para Filtragem e Paginação (Apenas para garantir que o estilo apareça) */
+    /* -------------------------------------- */
+    .listagem-filtros { 
+        margin-bottom: 20px; 
+        padding: 15px; 
+        background: #f8f9fa; 
+        border-radius: 8px; 
+        display: flex; 
+        justify-content: flex-start; /* Alinhamento à esquerda */
+        align-items: flex-end; 
+        gap: 15px; /* Espaçamento entre os campos */
+    }
+    .filtro-form { 
+        display: flex; 
+        gap: 15px; 
+        align-items: flex-end; 
+    }
+    .form-group-inline label { 
+        display: block; 
+        font-weight: 600; 
+        margin-bottom: 5px; 
+    }
+    .form-group-inline input[type="text"], .form-group-inline select {
+        padding: 8px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        min-width: 200px;
+    }
+    .btn-filtrar, .btn-limpar { 
+        padding: 8px 15px; 
+        border: none; 
+        border-radius: 4px; 
+        cursor: pointer; 
+        font-weight: 600; 
+    }
+    .btn-filtrar { background-color: #2e7d32; color: white; }
+    .btn-limpar { background-color: #6c757d; color: white; }
+    .pagination {
+        margin-top: 20px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 10px;
+    }
+    .page-link {
+        text-decoration: none;
+        padding: 8px 15px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        color: #007bff;
+        transition: background-color 0.3s;
+    }
+    .page-link.disabled {
+        color: #999;
+        pointer-events: none;
+        background-color: #eee;
+    }
+    .page-current {
+        font-weight: bold;
+        padding: 8px;
+    }
+</style>
+
+
 <div class="listagem-container">
+
     <div class="header-listagem">
-        <h1>Atendentes</h1>
+        <h1>Atendentes ({{ paginator.count }} encontrados)</h1>
         <a href="{% url 'criar_atendente' %}" class="btn-add">+ Novo Atendente</a>
     </div>
+    
+    <div class="listagem-filtros">
+        <form method="GET" action="{% url 'listar_atendentes' %}" class="filtro-form">
+            
+            <div class="form-group-inline">
+                <label for="{{ form.nome.id_for_label }}">{{ form.nome.label }}:</label>
+                {{ form.nome }}
+            </div>
 
-<div class="table-wrapper">
-    <table class="styled-table">
-        <thead>
-            <tr>
-                <th>Nome</th>
-                <th>CPF</th>
-                <th>Telefone</th>
-                <th style="text-align:center;">Ações</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for atendente in atendentes %}
-            <tr>
-                <td>{{ atendente.usuario.nome_completo }}</td>
-                <td>{{ atendente.usuario.cpf }}</td>
-                <td>{{ atendente.usuario.telefone }}</td>
-                <td class="td-acoes">
-                    <a href="{% url 'editar_atendente' atendente.pk %}" class="btn-edit">Editar</a>
-                    <a href="{% url 'deletar_atendente' atendente.pk %}" class="btn-delete">Excluir</a>
-                </td>
-            </tr>
-            {% empty %}
-            <tr>
-                <td colspan="4" class="no-data">Nenhum atendente cadastrado.</td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
+            <button type="submit" class="btn-filtrar">Filtrar</button>
+            <a href="{% url 'listar_atendentes' %}" class="btn-limpar">Limpar Filtros</a>
+        </form>
+    </div>
+
+
+    <div class="table-wrapper">
+        <table class="styled-table">
+            <thead>
+                <tr>
+                    <th>Nome</th>
+                    <th>CPF</th>
+                    <th>Telefone</th>
+                    <th style="text-align:center;">Ações</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for atendente in atendentes %}
+                <tr>
+                    <td>{{ atendente.nome_completo }}</td>
+                    <td>{{ atendente.cpf }}</td>
+                    <td>{{ atendente.telefone }}</td>
+                    <td class="td-acoes">
+                        <a href="{% url 'editar_usuario' atendente.pk %}" class="btn-details">Ver</a>
+                        <a href="{% url 'editar_usuario' atendente.pk %}" class="btn-edit">Editar</a>
+                        <a href="{% url 'deletar_atendente' atendente.pk %}" class="btn-delete">Excluir</a>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="4" class="no-data">Nenhum atendente encontrado com os filtros aplicados.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    
+    {% if is_paginated %}
+    <div class="pagination">
+        
+        {% if page_obj.has_previous %}
+            <a href="?page={{ page_obj.previous_page_number }}{% if form.nome.value %}&nome={{ form.nome.value }}{% endif %}" class="page-link prev">
+                &laquo; Anterior
+            </a>
+        {% else %}
+            <span class="page-link disabled">&laquo; Anterior</span>
+        {% endif %}
+
+        <span class="page-current">
+            Página {{ page_obj.number }} de {{ paginator.num_pages }}
+        </span>
+
+        {% if page_obj.has_next %}
+            <a href="?page={{ page_obj.next_page_number }}{% if form.nome.value %}&nome={{ form.nome.value }}{% endif %}" class="page-link next">
+                Próxima &raquo;
+            </a>
+        {% else %}
+            <span class="page-link disabled">Próxima &raquo;</span>
+        {% endif %}
+
+    </div>
+    {% endif %}
+
 </div>
 {% endblock %}
-
-

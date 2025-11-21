@@ -7,20 +7,22 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('core', '0002_alter_usuario_tipo'),
+        ("core", "0002_alter_usuario_tipo"),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='Especialidade',
+            name="Especialidade",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('nome', models.CharField(max_length=100, unique=True)),
+                ("id", models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name="ID")),
+                ("nome", models.CharField(max_length=100, unique=True)),
             ],
         ),
         migrations.AlterField(
-            model_name='medico',
-            name='especialidade',
-            field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.SET_NULL, to='core.especialidade'),
+            model_name="medico",
+            name="especialidade",
+            field=models.ForeignKey(
+                blank=True, null=True, on_delete=django.db.models.deletion.SET_NULL, to="core.especialidade"
+            ),
         ),
     ]

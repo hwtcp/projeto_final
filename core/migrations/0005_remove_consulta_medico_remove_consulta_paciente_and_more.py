@@ -6,42 +6,42 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('core', '0004_alter_atendente_options'),
+        ("core", "0004_alter_atendente_options"),
     ]
 
     operations = [
         migrations.RemoveField(
-            model_name='consulta',
-            name='medico',
+            model_name="consulta",
+            name="medico",
         ),
         migrations.RemoveField(
-            model_name='consulta',
-            name='paciente',
+            model_name="consulta",
+            name="paciente",
         ),
         migrations.AddField(
-            model_name='paciente',
-            name='altura',
+            model_name="paciente",
+            name="altura",
             field=models.DecimalField(blank=True, decimal_places=2, max_digits=4, null=True),
         ),
         migrations.AddField(
-            model_name='paciente',
-            name='historico_medico',
+            model_name="paciente",
+            name="historico_medico",
             field=models.TextField(blank=True, null=True),
         ),
         migrations.AddField(
-            model_name='paciente',
-            name='peso',
+            model_name="paciente",
+            name="peso",
             field=models.DecimalField(blank=True, decimal_places=2, max_digits=5, null=True),
         ),
         migrations.AlterField(
-            model_name='medico',
-            name='crm',
+            model_name="medico",
+            name="crm",
             field=models.CharField(blank=True, max_length=20, null=True, unique=True),
         ),
         migrations.DeleteModel(
-            name='AvisoAusencia',
+            name="AvisoAusencia",
         ),
         migrations.DeleteModel(
-            name='Consulta',
+            name="Consulta",
         ),
     ]

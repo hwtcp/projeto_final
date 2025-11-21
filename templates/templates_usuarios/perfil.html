@@ -1,0 +1,147 @@
+{% extends "base_dashboard.html" %} 
+{% load static %}
+
+{% block dashboard_content %}
+<link rel="stylesheet" href="{% static 'css/profile_cards.css' %}">
+
+<h1 class="perfil-title">Meu Perfil</h1>
+
+{% if messages %}
+<div class="messages-container">
+    {% for message in messages %}
+        <div class="alert alert-{{ message.tags }}">
+            {{ message }}
+        </div>
+    {% endfor %}
+</div>
+{% endif %}
+
+<div class="perfil-grid-container">
+
+    <div class="perfil-card card-foto-opcoes">
+        <div class="perfil-foto-area">
+            <img id="previewFoto"
+                 src="{% if user.foto %}{{ user.foto.url }}{% else %}{% static 'img/default_user.png' %}{% endif %}"
+                 class="perfil-foto">
+            <h3>{{ user.get_full_name|default:user.username }}</h3>
+            <p class="perfil-tipo-usuario">({{ user.tipo|upper }})</p>
+        </div>
+
+        <div class="perfil-actions-form">
+            <form method="POST" enctype="multipart/form-data" action="{% url 'perfil' %}">
+                {% csrf_token %}
+                <label class="perfil-btn-principal">
+                    Alterar Foto
+                    {{ perfil_form.foto }}
+                </label>
+                {% if perfil_form.foto.errors %}
+                    <div class="error-message">{{ perfil_form.foto.errors }}</div>
+                {% endif %}
+                <input type="hidden" name="action" value="update_photo">
+                <button type="submit" class="perfil-btn-secundario">Salvar Foto</button>
+            </form>
+
+            {% if user.foto %}
+            <form method="POST" action="{% url 'remover_foto' %}" class="form-remove-photo">
+                {% csrf_token %}
+                <button class="perfil-btn-secundario" type="submit">Remover Foto</button>
+            </form>
+            {% endif %}
+            <p class="photo-hint">JPG ou PNG — até 5MB</p>
+        </div>
+        
+        </div>
+
+
+    <div class="perfil-card card-personal-info">
+        <h2 class="perfil-card-title">Informações Pessoais e de Cadastro</h2>
+        <form method="POST" enctype="multipart/form-data" action="{% url 'perfil' %}">
+            {% csrf_token %}
+            <input type="hidden" name="action" value="update_profile">
+            
+            <fieldset class="perfil-form-secao">
+                <legend class="perfil-section-legend">Dados de Contato e Acesso</legend>
+                
+                {% for field in perfil_form %}
+                    {% if field.name != 'foto' %}
+                        <div class="perfil-form-row">
+                            <div class="perfil-form-group">
+                                <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                                {{ field }}
+                                {% if field.errors %}<div class="error-message">{{ field.errors }}</div>{% endif %}
+                            </div>
+                        </div>
+                    {% endif %}
+                {% endfor %}
+            </fieldset>
+
+            {% if medico_form %}
+                <fieldset class="perfil-form-secao">
+                    <legend class="perfil-section-legend">Dados Profissionais</legend>
+                    {% for field in medico_form %}
+                        <div class="perfil-form-row">
+                            <div class="perfil-form-group">
+                                <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                                {{ field }}
+                                {% if field.errors %}<div class="error-message">{{ field.errors }}</div>{% endif %}
+                            </div>
+                        </div>
+                    {% endfor %}
+                </fieldset>
+            {% elif paciente_form %}
+                <fieldset class="perfil-form-secao">
+                    <legend class="perfil-section-legend">Dados de Paciente</legend>
+                    {% for field in paciente_form %}
+                         <div class="perfil-form-row">
+                            <div class="perfil-form-group">
+                                <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                                {{ field }}
+                                {% if field.errors %}<div class="error-message">{{ field.errors }}</div>{% endif %}
+                            </div>
+                        </div>
+                    {% endfor %}
+                </fieldset>
+            {% endif %}
+
+            <div class="actions">
+                <button class="perfil-btn-salvar" type="submit">Salvar Alterações</button>
+            </div>
+        </form>
+    </div>
+
+
+    <div class="perfil-card card-password-change">
+        <h2 class="perfil-card-title">Alterar Senha</h2>
+        <form method="POST" action="{% url 'perfil' %}">
+            {% csrf_token %}
+            <input type="hidden" name="action" value="change_password">
+
+            {% for field in senha_form %}
+            <div class="perfil-form-group">
+                <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                {{ field }}
+                {% if field.errors %}<div class="error-message">{{ field.errors }}</div>{% endif %}
+            </div>
+            {% endfor %}
+
+            {% if senha_form.non_field_errors %}
+                <div class="error-message">{{ senha_form.non_field_errors }}</div>
+            {% endif %}
+
+            <div class="actions">
+                <button class="perfil-btn-salvar" type="submit">Atualizar Senha</button>
+            </div>
+        </form>
+    </div>
+
+</div>
+
+<script>
+document.querySelector('input[name="foto"]')?.addEventListener("change", e => {
+    if (e.target.files && e.target.files[0]) {
+        document.getElementById("previewFoto").src = URL.createObjectURL(e.target.files[0]);
+    }
+});
+</script>
+
+{% endblock %}

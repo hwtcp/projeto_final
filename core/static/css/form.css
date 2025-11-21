@@ -115,3 +115,111 @@ hr {
     border-top: 1px solid #ddd;
     margin: 30px 0;
 }
+
+.titulo-perfil{
+    font-size:28px;
+    margin-bottom:25px;
+    color:#2e7d32;
+    font-weight:700;
+}
+
+.perfil-grid{
+    display:flex;
+    gap:25px;
+    align-items:flex-start;
+}
+
+.perfil-card{
+    background:white;
+    padding:28px;
+    border-radius:18px;
+    box-shadow:0 4px 12px rgba(0,0,0,0.08);
+    flex:1;
+}
+
+.foto-card{
+    width:250px;
+    text-align:center;
+}
+
+.perfil-foto{
+    width:180px;
+    height:180px;
+    border-radius:50%;
+    object-fit:cover;
+    border:3px solid #2e7d32;
+    box-shadow:0 0 10px rgba(0,0,0,0.15);
+    margin-bottom:15px;
+}
+
+.btn-upload{
+    background:#2e7d32;
+    color:white;
+    padding:9px 12px;
+    border-radius:10px;
+    display:inline-block;
+    cursor:pointer;
+    font-weight:600;
+}
+
+.btn-upload input{ display:none; }
+
+.btn-remover{
+    background:#c62828;
+    color:white;
+    border:none;
+    margin-top:10px;
+    padding:8px 12px;
+    border-radius:8px;
+    cursor:pointer;
+}
+
+.foto-info{
+    margin-top:8px;
+    font-size:13px;
+    color:#666;
+}
+
+.linha{
+    display:flex;
+    gap:18px;
+    margin-bottom:18px;
+}
+
+.campo input{
+    width:100%;
+    padding:10px;
+    border-radius:10px;
+    border:1px solid #ccc;
+}
+
+.secao-titulo{
+    color:#2e7d32;
+    margin-bottom:18px;
+    font-weight:700;
+}
+
+.btn-salvar{
+    background:#2e7d32;
+    color:white;
+    padding:11px 25px;
+    border:none;
+    border-radius:10px;
+    margin-top:10px;
+    font-weight:600;
+    cursor:pointer;
+}
+
+.senha-card{
+    margin-top:35px;
+}
+
+.erro-lista{
+    background:#ffd6d6;
+    padding:10px;
+    border-radius:8px;
+    margin:10px 0;
+    color:#7a0000;
+    font-size:14px;
+}
+

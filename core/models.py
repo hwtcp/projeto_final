@@ -1,8 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
 from django.conf import settings
-from django.db.models.signals import post_save
-from django.dispatch import receiver
 
 
 class Usuario(AbstractUser):
@@ -11,13 +9,13 @@ class Usuario(AbstractUser):
     data_nascimento = models.DateField(null=True, blank=True)
     endereco = models.CharField(max_length=200, blank=True)
     telefone = models.CharField(max_length=15, blank=True, null=True)
-    foto = models.ImageField(upload_to='usuarios/', blank=True, null=True)
+    foto = models.ImageField(upload_to="usuarios/", blank=True, null=True)
 
     TIPO_USUARIO = [
-        ('medico', 'Médico'),
-        ('atendente', 'Atendente'),
-        ('paciente', 'Paciente'),
-        ('admin', 'Admin'),
+        ("medico", "Médico"),
+        ("atendente", "Atendente"),
+        ("paciente", "Paciente"),
+        ("admin", "Admin"),
     ]
     tipo = models.CharField(max_length=20, choices=TIPO_USUARIO)
 
@@ -60,8 +58,3 @@ class Paciente(models.Model):
 
     def __str__(self):
         return self.usuario.nome_completo
-
-
-
-
-

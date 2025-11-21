@@ -1,3 +1,14 @@
+/* --- 1. CONFIGURAÇÕES GLOBAIS / CORES --- */
+:root {
+    /* Cores do Tema */
+    --color-primary: #2e7d32;     /* Verde Escuro Principal */
+    --color-secondary: #66BB6A;   /* Verde Claro (Destaque/CTA) */
+    --color-dark: #1A361A;        /* Verde Escuro para Rodapé */
+    --color-background: #F4F6F9;  /* Fundo suave para Home */
+    --color-white: #FFFFFF;
+    --color-light-bg: #fafafa;    /* Seu fundo de dashboard */
+}
+
 * {
     font-family: 'Nunito Sans', sans-serif;
     box-sizing: border-box;
@@ -5,10 +16,285 @@
     padding: 0;
 }
 
+/* --- 2. ESTILOS DO HEADER (NOVO) --- */
+
+.header-container {
+    background-color: var(--color-primary);
+    color: var(--color-white);
+    padding: 15px 50px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.logo-area {
+    display: flex;
+    flex-direction: column;
+}
+
+.logo-area h1 {
+    /* Preservando seu estilo Poppins, mas ajustando para o novo Header */
+    font-family: 'Poppins', sans-serif; 
+    font-weight: 600; 
+    font-size: 28px;
+    margin: 0;
+    letter-spacing: 0.5px;
+    display: flex;
+    align-items: center;
+}
+
+.logo-area h1 i {
+    font-size: 32px;
+    margin-right: 10px;
+    color: var(--color-secondary); /* Ícone em verde claro para contraste */
+}
+
+.logo-area p {
+    font-size: 14px;
+    margin-top: 2px;
+    opacity: 0.9;
+}
+
+.nav-links a {
+    color: var(--color-white);
+    text-decoration: none;
+    margin-left: 25px;
+    font-weight: 600;
+    transition: color 0.3s;
+}
+
+.nav-links a:hover {
+    color: var(--color-secondary);
+}
+
+/* --- 3. ESTILOS DA PÁGINA INICIAL (INDEX.HTML) --- */
+
+.main-content-container {
+    display: flex;
+    justify-content: center;
+    align-items: stretch; /* Alinha os itens para preencher a altura */
+    max-width: 1000px; /* Limita um pouco a largura para não ficar gigante */
+    margin: 50px auto; /* Centraliza verticalmente e adiciona margem */
+    /* Remova o padding horizontal para permitir que se "colem" se necessário, 
+       mas vamos usar a largura do max-width e margin auto para centralizar */
+    padding: 0; 
+    /* Removido: gap: 30px; */ /* REMOVA ESTA LINHA */
+    min-height: calc(100vh - 200px); 
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.15); /* Sombra maior no container principal */
+    border-radius: 12px; /* Arredonda o bloco inteiro */
+    overflow: hidden; /* Garante que os filhos respeitem o border-radius */
+}
+
+.hero-section {
+    flex: 1.2; /* Dando um pouco mais de largura para a imagem */
+    position: relative;
+    /* border-radius: 12px; REMOVA ESTA LINHA */
+    border-top-left-radius: 12px; /* Apenas bordas esquerdas */
+    border-bottom-left-radius: 12px;
+    overflow: hidden;
+    box-shadow: none; /* REMOVA A SOMBRA INDIVIDUAL */
+    min-height: 450px; 
+}
+
+.hero-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+
+.hero-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(to bottom, rgba(0, 0, 0, 0.3) 0%, rgba(0, 0, 0, 0.6) 100%);
+    color: var(--color-white);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 40px;
+    text-align: left;
+}
+
+.hero-overlay h2 {
+    font-size: 30px;
+    font-weight: 700;
+    margin-bottom: 10px;
+    color: var(--color-white); /* Garante cor branca sobre o overlay */
+}
+
+.hero-overlay p {
+    font-size: 18px;
+    margin-bottom: 30px;
+    opacity: 0.9;
+}
+
+.login-card-container {
+    flex: 1; /* A imagem vai ser ligeiramente maior que o login */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px 0; /* Mantenha um padding vertical interno para o card respirar */
+    background-color: var(--color-white); /* Garante fundo branco para o container do card */
+    border-top-right-radius: 12px; /* Apenas bordas direitas */
+    border-bottom-right-radius: 12px;
+}
+
+.login-card {
+    background-color: transparent; /* Card transparente, o container já é branco */
+    padding: 40px;
+    border-radius: 0; /* Remova bordas individuais do card interno */
+    box-shadow: none; /* Remova a sombra individual do card */
+    width: 100%;
+    max-width: 400px;
+}
+.login-card h3 {
+    font-size: 24px;
+    font-weight: 600;
+    color: var(--color-primary);
+    margin-bottom: 30px;
+    text-align: center;
+}
+
+/* Estilos para campos de input com ícones (Home e Reutilizável) */
+.input-group {
+    margin-bottom: 20px;
+}
+
+.input-group label {
+    display: block;
+    font-size: 14px;
+    color: #555;
+    margin-bottom: 5px;
+}
+
+.input-field {
+    display: flex;
+    align-items: center;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 10px;
+    background-color: #f9f9f9;
+}
+
+.input-field i {
+    color: var(--color-primary);
+    margin-right: 10px;
+    font-size: 16px;
+}
+
+.input-field input {
+    border: none;
+    outline: none;
+    flex-grow: 1;
+    background-color: transparent;
+    font-size: 16px;
+    padding: 0;
+}
+
+/* Links Adicionais */
+.register-link, .forgot-password-link {
+    text-align: center;
+    margin-top: 20px;
+    font-size: 14px;
+}
+
+.register-link a {
+    color: var(--color-secondary);
+    font-weight: 600;
+    text-decoration: none;
+    transition: color 0.3s;
+}
+
+.register-link a:hover {
+    color: var(--color-primary);
+    text-decoration: underline;
+}
+
+.forgot-password-link a {
+    color: #888;
+    text-decoration: none;
+}
+.forgot-password-link a:hover {
+    text-decoration: underline;
+}
+
+
+/* --- 4. ESTILOS DO RODAPÉ (NOVO) --- */
+
+.footer-container {
+    background-color: var(--color-dark);
+    color: var(--color-light-text);
+    padding: 40px 50px 20px 50px;
+    font-size: 14px;
+}
+
+.footer-grid {
+    display: flex;
+    justify-content: space-between;
+    max-width: 1200px;
+    margin: 0 auto 30px auto;
+    flex-wrap: wrap; 
+}
+
+.footer-column {
+    width: 22%;
+    min-width: 150px;
+    margin-bottom: 20px;
+}
+
+.footer-column h4 {
+    font-size: 16px;
+    font-weight: 700;
+    margin-bottom: 15px;
+    color: var(--color-secondary);
+}
+
+.footer-column ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.footer-column ul li {
+    margin-bottom: 8px;
+}
+
+.footer-column ul li a {
+    color: var(--color-light-text);
+    text-decoration: none;
+    transition: color 0.3s;
+}
+
+.footer-column ul li a:hover {
+    color: var(--color-secondary);
+}
+
+.footer-bottom {
+    text-align: center;
+    padding-top: 15px;
+    border-top: 1px solid rgba(224, 224, 224, 0.2);
+}
+
+.social-icons a {
+    color: var(--color-light-text);
+    font-size: 20px;
+    margin-left: 15px;
+    transition: color 0.3s;
+}
+
+.social-icons a:hover {
+    color: var(--color-secondary);
+}
+
+/* --- 5. ESTILOS DO DASHBOARD (SEUS ESTILOS ORIGINAIS) --- */
+
 .dashboard-container {
     display: flex;
     min-height: 80vh;
-    background-color: #fafafa;
+    background-color: var(--color-light-bg);
 }
 
 .sidebar {
@@ -22,19 +308,20 @@
 }
 
 .sidebar h2 {
-    color: #2e7d32;
+    color: var(--color-primary);
     font-size: 22px;
     margin-bottom: 25px;
     text-align: center;
     font-weight: 700;
 }
 
+/* Links do Sidebar (Menu) */
 .sidebar a {
     display: flex;
     align-items: center;
     justify-content: flex-start;
-    color: #fff;
-    background: linear-gradient(135deg, #43a047, #2e7d32);
+    color: var(--color-white);
+    background: linear-gradient(135deg, #43a047, var(--color-primary));
     text-decoration: none;
     font-weight: 500;
     font-size: 16px;
@@ -51,11 +338,20 @@
     box-shadow: 0 6px 10px rgba(0, 0, 0, 0.2);
 }
 
+.sidebar a.active {
+    background-color: #c8e6c9;
+    font-weight: 600;
+    border-left: 4px solid var(--color-primary);
+    color: #333 !important; /* Mudar cor do texto para ativo */
+    box-shadow: none;
+    transform: none;
+}
+
 .sidebar a.logout-btn {
     display: flex;
     align-items: center;
     justify-content: flex-start;
-    color: #fff !important;
+    color: var(--color-white) !important;
     background: linear-gradient(135deg, #e53935, #b71c1c);
     text-decoration: none;
     font-weight: 500;
@@ -76,7 +372,11 @@
 .sidebar i {
     margin-right: 10px;
     font-size: 18px;
-    color: #fff;
+    color: inherit; /* Permite que o ícone herde a cor do link */
+}
+
+.sidebar a.active i {
+    color: var(--color-primary); /* Força a cor do ícone no ativo */
 }
 
 .content {
@@ -86,7 +386,6 @@
     padding: 0;
 }
 
-
 .content h1 {
     font-size: 28px;
     font-weight: 700;
@@ -95,7 +394,7 @@
 }
 
 .welcome-box {
-    background-color: #fff;
+    background-color: var(--color-white);
     border-radius: 12px;
     padding: 30px;
     box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
@@ -103,7 +402,7 @@
 
 .welcome-box h2 {
     font-size: 22px;
-    color: #2e7d32;
+    color: var(--color-primary);
     margin-bottom: 10px;
 }
 
@@ -112,30 +411,12 @@
     font-size: 16px;
 }
 
-.sidebar a.logout-btn {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: white !important;
-    background-color: #e53935;
-    text-decoration: none;
-    font-weight: 500;
-    font-size: 16px;
-    padding: 10px 15px;
-    border-radius: 8px;
-    margin-top: 20px;
-    transition: background-color 0.2s;
-}
-
-.sidebar a.logout-btn:hover {
-    background-color: #d32f2f;
-}
-
+/* Tabela */
 table {
     width: 100%;
     border-collapse: collapse;
     margin-top: 20px;
-    background: white;
+    background: var(--color-white);
     border-radius: 10px;
     overflow: hidden;
     box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
@@ -147,8 +428,8 @@ th, td {
 }
 
 th {
-    background-color: #2e7d32;
-    color: white;
+    background-color: var(--color-primary);
+    color: var(--color-white);
     font-weight: 600;
 }
 
@@ -161,29 +442,108 @@ tr:hover {
     transition: 0.2s;
 }
 
-button, .btn {
+/* --- 6. ESTILOS DE BOTÕES REUTILIZÁVEIS --- */
+
+button, .btn, .btn-login, .btn-cta {
     display: inline-block;
-    background-color: #2e7d32;
-    color: white;
+    background-color: var(--color-primary);
+    color: var(--color-white);
     padding: 10px 20px;
     border: none;
     border-radius: 8px;
     text-decoration: none;
-    font-weight: 500;
-    transition: background-color 0.2s;
-}
-
-.sidebar a.active {
-    background-color: #c8e6c9;
     font-weight: 600;
-    border-left: 4px solid #2e7d32;
+    transition: background-color 0.2s, transform 0.2s;
+    cursor: pointer;
 }
 
-
-header h1 {
-    font-family: 'Poppins', sans-serif;
-    font-weight: 200;
-    font-size: 34px;
-    letter-spacing: 0.5px;
+button:hover, .btn:hover, .btn-login:hover, .btn-cta:hover {
+    background-color: var(--color-dark);
+    transform: translateY(-1px);
 }
 
+/* Botão de Chamada para Ação (CTA) - Estilo específico para Home */
+.btn-cta {
+    padding: 12px 25px;
+    border-radius: 50px;
+    background-color: var(--color-secondary);
+    color: var(--color-dark);
+    font-weight: 700;
+}
+
+.btn-cta:hover {
+    background-color: var(--color-primary);
+    color: var(--color-white);
+}
+
+/* --- 7. RESPONSIVIDADE --- */
+
+@media (max-width: 992px) {
+    .main-content-container {
+        flex-direction: column; /* Coloca os painéis um abaixo do outro */
+        max-width: 500px; /* Reduz a largura total para mobile */
+        margin: 20px auto; /* Ajusta margem para mobile */
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1); /* Sombra menor para mobile */
+    }
+
+    .hero-section {
+        min-height: 250px; /* Reduz a altura na versão mobile */
+        width: 100%;
+        border-radius: 12px 12px 0 0; /* Arredonda só o topo no mobile */
+    }
+
+    .login-card-container {
+        width: 100%;
+        border-radius: 0 0 12px 12px; /* Arredonda só a base no mobile */
+    }
+    
+    /* Rodapé */
+    .footer-container {
+        padding: 30px 20px 15px 20px;
+    }
+    .footer-grid {
+        flex-direction: column;
+    }
+    .footer-column {
+        width: 100%;
+        min-width: unset;
+    }
+}
+
+.error-message {
+    background-color: #f443361a; /* Vermelho claro */
+    color: #b71c1c; /* Vermelho escuro */
+    border: 1px solid #d32f2f;
+    border-radius: 8px;
+    padding: 10px 15px;
+    margin-bottom: 20px;
+    font-size: 14px;
+}
+
+.error-message p {
+    margin: 0;
+}
+
+@media (max-width: 768px) {
+    /* Header */
+    .header-container {
+        flex-direction: column;
+        text-align: center;
+        padding: 15px 20px;
+    }
+    .nav-links {
+        margin-top: 10px;
+    }
+    .nav-links a {
+        margin: 0 10px;
+    }
+
+    /* Sidebar */
+    .sidebar {
+        width: 100%;
+        height: auto;
+        padding: 10px;
+        border-right: none;
+        border-bottom: 1px solid #ddd;
+    }
+}

@@ -6,59 +6,223 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ClickSaúde</title>
 
-    <!-- Fontes -->
     <link href="https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@300;400;600;700&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
 
-    <!-- Ícones -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 
-    <!-- CSS principal -->
     <link rel="stylesheet" href="{% static 'css/home.css' %}">
 
     <style>
+        /* Cores chaves:
+           Verde Escuro (Header/Rodapé): #2E7D32
+           Verde Claro (Destaque): #66BB6A
+           Fundo (Corpo): #F4F6F9 (Creme/Cinza Claro) */
+
         body {
             font-family: 'Nunito Sans', sans-serif;
+            margin: 0; /* Remover margens padrão do corpo */
+            background-color: #F4F6F9; /* Fundo suave */
+            min-height: 100vh; /* Para garantir que o rodapé fique no final */
+            display: flex;
+            flex-direction: column;
         }
 
-        header {
+        /* --- Estilos do NOVO HEADER --- */
+        .header-container {
             background-color: #2e7d32;
             color: white;
-            padding: 30px;
-            text-align: left; 
+            padding: 15px 50px; /* Reduzir o padding para um visual mais limpo */
+            display: flex;
+            justify-content: space-between; /* Alinha logo à esquerda e navegação à direita */
+            align-items: center;
         }
 
-        header h1 {
+        .logo-area {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .logo-area h1 {
             font-family: 'Poppins', sans-serif;
-            font-weight: 300; 
-            font-size: 42px;
+            font-weight: 600; /* Mais peso para o logo */
+            font-size: 28px;
             margin: 0;
             letter-spacing: 0.5px;
+            display: flex;
+            align-items: center;
         }
 
-        header p {
-            font-size: 18px;
-            margin-top: 5px;
+        .logo-area h1 i {
+            font-size: 32px;
+            margin-right: 10px;
+            color: #66BB6A; /* Ícone em verde claro para contraste */
+        }
+
+        .logo-area p {
+            font-size: 14px;
+            margin-top: 2px;
             font-family: 'Nunito Sans', sans-serif;
             opacity: 0.9;
         }
+
+        .nav-links a {
+            color: white;
+            text-decoration: none;
+            margin-left: 25px;
+            font-family: 'Nunito Sans', sans-serif;
+            font-weight: 600;
+            transition: color 0.3s;
+        }
+
+        .nav-links a:hover {
+            color: #66BB6A; /* Destaque no hover */
+        }
+        
+        /* --- Estilos da MAIN (Corpo do Conteúdo) --- */
+        main {
+            padding: 50px 20px;
+            flex-grow: 1; /* Permite que o conteúdo principal ocupe o espaço restante */
+        }
+        
+        /* --- Estilos do NOVO RODAPÉ --- */
+        .footer-container {
+            background-color: #1A361A; /* Cor mais escura para o rodapé */
+            color: #E0E0E0;
+            padding: 40px 50px 20px 50px;
+            font-size: 14px;
+        }
+
+        .footer-grid {
+            display: flex;
+            justify-content: space-between;
+            max-width: 1200px;
+            margin: 0 auto 30px auto;
+            flex-wrap: wrap; /* Garante que funcione em telas menores */
+        }
+
+        .footer-column {
+            width: 22%; /* Distribuição em 4 colunas */
+            min-width: 150px;
+            margin-bottom: 20px;
+        }
+
+        .footer-column h4 {
+            font-size: 16px;
+            font-weight: 700;
+            margin-bottom: 15px;
+            color: #66BB6A;
+        }
+
+        .footer-column ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .footer-column ul li {
+            margin-bottom: 8px;
+        }
+
+        .footer-column ul li a {
+            color: #E0E0E0;
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+
+        .footer-column ul li a:hover {
+            color: #66BB6A;
+        }
+
+        .footer-bottom {
+            text-align: center;
+            padding-top: 15px;
+            border-top: 1px solid rgba(224, 224, 224, 0.2);
+        }
+
+        .social-icons a {
+            color: #E0E0E0;
+            font-size: 20px;
+            margin-left: 15px;
+            transition: color 0.3s;
+        }
+
+        .social-icons a:hover {
+            color: #66BB6A;
+        }
+
     </style>
 </head>
 <body>
 
-    <header>
-        <h1>ClickSaúde</h1>
-        <p>Sua saúde a um clique de distância</p>
+    <header class="header-container">
+        <div class="logo-area">
+            <h1>
+            <i class="fas fa-plus-square"></i> 
+            <a href="/" style="color:white; text-decoration: none;">ClickSaúde</a>
+            </h1>
+            <p>Sua saúde a um clique de distância</p>
+        </div>
+        <div class="nav-links">
+            <a href="#">Sobre Nós</a>
+            <a href="#">Serviços</a>
+            <a href="#">Contato</a>
+        </div>
     </header>
 
-    <main style="padding:20px;">
+    <main>
         {% block content %}
         {% endblock %}
     </main>
 
+    <footer class="footer-container">
+        <div class="footer-grid">
+            
+            <div class="footer-column">
+                <h4>Sobre Nós</h4>
+                <ul>
+                    <li><a href="#">Missão</a></li>
+                    <li><a href="#">Valores</a></li>
+                    <li><a href="#">Trabalhe Conosco</a></li>
+                </ul>
+            </div>
+
+            <div class="footer-column">
+                <h4>Serviços/Ajuda</h4>
+                <ul>
+                    <li><a href="#">Perguntas Frequentes</a></li>
+                    <li><a href="#">Especialidades</a></li>
+                    <li><a href="#">Política de Privacidade</a></li>
+                </ul>
+            </div>
+
+            <div class="footer-column">
+                <h4>Contato</h4>
+                <ul>
+                    <li>Email: contato@clicksaude.com.br</li>
+                    <li>Telefone: (XX) XXXX-XXXX</li>
+                    <li>Endereço: Rua Saúde, 123</li>
+                </ul>
+            </div>
+
+            <div class="footer-column">
+                <h4>Siga-nos</h4>
+                <div class="social-icons">
+                    <a href="#" target="_blank"><i class="fab fa-facebook-f"></i></a>
+                    <a href="#" target="_blank"><i class="fab fa-instagram"></i></a>
+                    <a href="#" target="_blank"><i class="fab fa-linkedin-in"></i></a>
+                </div>
+            </div>
+            
+        </div>
+        
+        <div class="footer-bottom">
+            © 2024 ClickSaúde. Todos os direitos reservados.
+        </div>
+    </footer>
+
 </body>
 </html>
-
 
 
 
