@@ -17,7 +17,236 @@
 }
 
 /* --- 2. ESTILOS DO HEADER (NOVO) --- */
+/* ------------------------------------------- */
+/* CONTAINER CENTRALIZADOR */
+/* ------------------------------------------- */
+.detalhes-container {
+    /* Garante que o container do dashboard ocupe toda a largura */
+    width: 100%; 
+    padding: 20px;
+    /* Centraliza o wrapper dentro do conteúdo do dashboard */
+    display: flex;
+    justify-content: center;
+    align-items: flex-start; /* Alinha ao topo para não flutuar */
+}
 
+/* Wrapper para limitar a largura do cartão */
+.detalhes-card-wrapper {
+    width: 100%;
+    max-width: 800px; /* Limite a largura para melhor leitura */
+}
+
+.detalhes-card {
+    background-color: #fff;
+    border-radius: 12px;
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
+    padding: 30px;
+    border: 1px solid var(--color-border);
+}
+
+/* ------------------------------------------- */
+/* ESTILOS GERAIS E CABEÇALHO */
+/* ------------------------------------------- */
+.header-details {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 2px solid var(--color-primary);
+    padding-bottom: 15px;
+    margin-bottom: 25px;
+}
+
+.header-details h1 {
+    font-size: 1.8em;
+    color: #333;
+    margin: 0;
+}
+
+.detalhes-card hr {
+    border: none;
+    border-top: 1px dashed var(--color-border);
+    margin: 25px 0;
+}
+
+/* ------------------------------------------- */
+/* BLOCOS DE SEÇÃO */
+/* ------------------------------------------- */
+.section-block h3 {
+    font-size: 1.3em;
+    color: var(--color-primary);
+    margin-bottom: 20px;
+}
+
+.section-block h3 i {
+    margin-right: 10px;
+}
+
+.info-group {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    justify-content: space-between;
+}
+
+/* Linhas de Detalhes Simples */
+.detail-item-line {
+    width: 48%; /* Duas colunas em telas grandes */
+    margin-bottom: 10px;
+    font-size: 1em;
+}
+
+.detail-label {
+    font-weight: 600;
+    color: #555;
+    margin-right: 5px;
+}
+
+.detail-value {
+    color: #222;
+}
+
+.detail-label i {
+    color: #888;
+    margin-right: 5px;
+}
+
+/* ------------------------------------------- */
+/* GRUPO DE PERFIL (MÉDICO E PACIENTE) */
+/* ------------------------------------------- */
+.profile-group {
+    justify-content: space-around;
+    gap: 30px;
+}
+
+.profile-item {
+    display: flex;
+    align-items: center;
+    width: 45%;
+    background-color: var(--color-bg-light);
+    padding: 15px;
+    border-radius: 8px;
+    border: 1px solid #ddd;
+}
+
+.detail-photo {
+    width: 70px;
+    height: 70px;
+    border-radius: 50%;
+    object-fit: cover;
+    margin-right: 15px;
+    border: 3px solid var(--color-secondary);
+}
+
+.profile-text h4 {
+    margin: 0 0 3px 0;
+    font-size: 1.1em;
+    color: #222;
+}
+
+.specialty-text {
+    color: var(--color-primary);
+    font-weight: 500;
+    margin-bottom: 2px;
+}
+
+.secondary-text {
+    font-size: 0.9em;
+    color: #777;
+    margin: 0;
+}
+
+/* ------------------------------------------- */
+/* INFORMAÇÕES CLÍNICAS */
+/* ------------------------------------------- */
+.clinical-box {
+    width: 100%; /* Uma coluna para texto longo */
+    background-color: #fcfcfc;
+    border: 1px solid #eee;
+    padding: 15px;
+    border-radius: 8px;
+    margin-bottom: 15px;
+}
+
+.clinical-box h4 {
+    font-size: 1em;
+    color: #333;
+    margin-top: 0;
+    border-bottom: 1px solid var(--color-border);
+    padding-bottom: 5px;
+}
+
+.clinical-text {
+    color: #444;
+    line-height: 1.6;
+    white-space: pre-wrap; /* Preserva quebras de linha no texto */
+}
+
+.btn-download {
+    display: inline-block;
+    background-color: var(--color-secondary);
+    color: #fff;
+    padding: 10px 15px;
+    border-radius: 6px;
+    text-decoration: none;
+    transition: background-color 0.2s;
+}
+
+.btn-download i {
+    margin-right: 8px;
+}
+
+/* ------------------------------------------- */
+/* AÇÕES E BOTÕES */
+/* ------------------------------------------- */
+.card-actions-detalhes {
+    display: flex;
+    justify-content: space-between;
+    padding-top: 20px;
+    border-top: 1px solid var(--color-border);
+    margin-top: 15px;
+}
+
+.btn-voltar {
+    background-color: #6c757d;
+    color: #fff;
+    padding: 10px 15px;
+    border-radius: 6px;
+    text-decoration: none;
+    transition: background-color 0.2s;
+}
+
+.btn-cancelar-grande {
+    background-color: #dc3545;
+    color: #fff;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+/* ------------------------------------------- */
+/* MEDIA QUERIES (Responsividade) */
+/* ------------------------------------------- */
+@media (max-width: 768px) {
+    .detalhes-card {
+        padding: 20px;
+    }
+    
+    .profile-group, .info-group {
+        flex-direction: column;
+        gap: 15px;
+    }
+
+    .profile-item, .detail-item-line {
+        width: 100%;
+    }
+
+    .card-actions-detalhes {
+        flex-direction: column;
+        gap: 10px;
+    }
+}
 .header-container {
     background-color: var(--color-primary);
     color: var(--color-white);
@@ -161,6 +390,9 @@
 /* Estilos para campos de input com ícones (Home e Reutilizável) */
 .input-group {
     margin-bottom: 20px;
+    display: flex; /* Habilita o Flexbox (pode já estar habilitado) */
+    flex-direction: column; /* FORÇA os itens (label e input-field) a se empilharem */
+
 }
 
 .input-group label {
@@ -545,5 +777,220 @@ button:hover, .btn:hover, .btn-login:hover, .btn-cta:hover {
         padding: 10px;
         border-right: none;
         border-bottom: 1px solid #ddd;
+    }
+}
+
+/* Definições de Cores (Se já não existirem no seu CSS) */
+:root {
+    --color-primary: #1C9044; /* Verde Principal */
+    --color-secondary: #007bff; /* Azul (para botões) */
+    --color-bg-light: #f4f6f9; /* Fundo Leve */
+    --color-border: #e0e0e0;
+}
+
+/* ------------------------------------------- */
+/* ESTILO DE CABEÇALHO DENTRO DO DASHBOARD */
+/* ------------------------------------------- */
+.consulta-page-header {
+    margin-bottom: 30px;
+    padding-bottom: 10px;
+    border-bottom: 2px solid var(--color-border);
+}
+
+.consulta-page-header h1 {
+    color: var(--color-primary);
+    font-size: 1.8em;
+    margin-bottom: 5px;
+}
+
+.consulta-page-header p {
+    color: #777;
+    font-size: 0.9em;
+}
+
+/* ------------------------------------------- */
+/* ESTILO DOS CARDS DE CONSULTA */
+/* ------------------------------------------- */
+.consulta-list-container {
+    padding: 0; /* Remove o padding do container anterior */
+}
+
+.consulta-card {
+    background-color: #fff;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    margin-bottom: 25px;
+    overflow: hidden;
+    transition: transform 0.2s;
+    border: 1px solid var(--color-border); /* Adiciona uma borda sutil */
+}
+
+.consulta-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.12);
+}
+
+/* Cabeçalho (Data e Hora) */
+.card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 20px;
+    background-color: var(--color-bg-light);
+    border-bottom: 1px solid var(--color-border);
+    font-weight: 600;
+    color: #333;
+    font-size: 0.95em;
+}
+
+.consulta-date i, .consulta-time i {
+    color: var(--color-primary);
+    margin-right: 5px;
+}
+
+/* Corpo do Card (Médico e Detalhes) */
+.card-body {
+    display: flex;
+    /* Altera para "wrap" para melhor adaptação em telas menores */
+    flex-wrap: wrap; 
+    justify-content: space-between;
+    padding: 20px;
+}
+
+/* Informações do Médico (Foto) */
+.medico-info {
+    display: flex;
+    align-items: center;
+    /* Ocupa a metade ou a largura total em mobile */
+    width: 48%; 
+    min-width: 250px;
+}
+
+.medico-photo {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    object-fit: cover;
+    margin-right: 15px;
+    border: 3px solid var(--color-primary);
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.medico-name {
+    font-size: 1.1em;
+    font-weight: 600;
+    color: #222;
+    margin: 0;
+}
+
+.medico-specialty {
+    color: var(--color-primary);
+    font-size: 0.9em;
+    font-weight: 500;
+    margin-top: 2px;
+}
+
+/* Detalhes da Consulta (Local, Clínica) */
+.consulta-details {
+    width: 48%; 
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    font-size: 0.95em;
+    color: #555;
+}
+
+.detail-item i {
+    margin-right: 8px;
+    color: #888;
+}
+
+/* Status */
+.status-badge {
+    padding: 5px 10px;
+    border-radius: 20px;
+    font-weight: bold;
+    text-align: center;
+    margin-top: 10px;
+    font-size: 0.85em;
+    width: fit-content;
+}
+
+.status-agendada {
+    background-color: #d4edda;
+    color: #155724; /* Verde */
+}
+
+/* Status: Concluída */
+.status-concluida {
+    background-color: #cce5ff;
+    color: #004085; /* Azul Escuro */
+}
+
+.status-cancelada {
+    background-color: #f8d7da;
+    color: #721c24;
+}
+
+/* Ações */
+.card-actions {
+    padding: 15px 20px;
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    border-top: 1px solid var(--color-border);
+}
+
+/* Botões */
+.btn-detail, .btn-cancel {
+    padding: 8px 15px;
+    border-radius: 6px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background-color 0.2s;
+    text-decoration: none;
+    border: none;
+    font-size: 0.9em;
+}
+
+.btn-detail {
+    background-color: var(--color-secondary);
+    color: #fff;
+}
+
+.btn-cancel {
+    background-color: #f44336;
+    color: #fff;
+}
+
+/* Nenhuma consulta */
+.no-consultas {
+    text-align: center;
+    padding: 30px;
+    background-color: var(--color-bg-light);
+    border-radius: 12px;
+    border: 1px dashed var(--color-border);
+    color: #777;
+    font-size: 1.1em;
+}
+.no-consultas i {
+    margin-right: 10px;
+    color: var(--color-primary);
+}
+
+/* --- Responsividade (Para telas pequenas) --- */
+@media (max-width: 768px) {
+    .card-body {
+        flex-direction: column;
+        gap: 15px;
+    }
+
+    .medico-info, .consulta-details {
+        width: 100%;
+        min-width: unset;
+    }
+
+    .card-actions {
+        justify-content: space-between;
     }
 }

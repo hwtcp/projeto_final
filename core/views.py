@@ -21,6 +21,9 @@ from django.urls import reverse_lazy
 from django.contrib.auth.views import PasswordChangeView
 from django.views import View
 from django.db.models import Q
+from django.contrib.auth import update_session_auth_hash
+import os
+from django.utils.text import get_valid_filename
 
 
 def index(request):
@@ -112,7 +115,6 @@ def auto_cadastro_paciente(request):
 
     return render(request, "cadastro.html", {"form": form})
 
-
 @login_required
 def home(request):
     return redirect("perfil")
@@ -137,7 +139,6 @@ class AdminOrAtendenteRequiredMixin(UserPassesTestMixin):
         return (
             self.request.user.is_superuser or self.request.user.tipo == "admin" or self.request.user.tipo == "atendente"
         )
-
 
 class DetalhesUsuarioView(AdminOrAtendenteRequiredMixin, View):
 
@@ -166,18 +167,21 @@ class DetalhesUsuarioView(AdminOrAtendenteRequiredMixin, View):
 
 class EditarUsuarioView(AdminOrAtendenteRequiredMixin, View):
 
-    def get_forms(self, user, data=None):
-
-        perfil_form = PerfilForm(data=data, instance=user)
+    def get_forms(self, user, data=None, files=None):
+        """
+        Retorna (perfil_form, medico_form, paciente_form).
+        Sempre passe files=request.FILES quando for POST para suportar upload de foto.
+        """
+        perfil_form = PerfilForm(data=data, files=files, instance=user)
         medico_form = None
         paciente_form = None
 
         if user.tipo == "medico":
             medico_instance, created = Medico.objects.get_or_create(usuario=user)
-            medico_form = MedicoExtraForm(data=data, instance=medico_instance)
+            medico_form = MedicoExtraForm(data=data, files=files, instance=medico_instance)
         elif user.tipo == "paciente":
             paciente_instance, created = Paciente.objects.get_or_create(usuario=user)
-            paciente_form = PacienteExtraForm(data=data, instance=paciente_instance)
+            paciente_form = PacienteExtraForm(data=data, files=files, instance=paciente_instance)
 
         return perfil_form, medico_form, paciente_form
 
@@ -200,17 +204,39 @@ class EditarUsuarioView(AdminOrAtendenteRequiredMixin, View):
         usuario_base = get_object_or_404(Usuario, pk=pk)
         action = request.POST.get("action")
 
-        perfil_form, medico_form, paciente_form = self.get_forms(usuario_base, data=request.POST)
+        # ATENÇÃO: passamos request.FILES aqui para suportar foto
+        perfil_form, medico_form, paciente_form = self.get_forms(
+            usuario_base, data=request.POST, files=request.FILES
+        )
 
         if action == "update_status":
-            status_form = PerfilForm(request.POST, instance=usuario_base)
+    # Permissão: admin pode editar qualquer um; usuário só pode editar o próprio status
+            if not (request.user.tipo in ("admin", "atendente") or request.user.pk == usuario_base.pk):
+                messages.error(request, "Acesso negado para alterar status.")
+                return redirect("editar_usuario", pk=usuario_base.pk)
 
-            if status_form.is_valid():
-                usuario_base.is_active = status_form.cleaned_data.get("is_active")
-                usuario_base.save(update_fields=["is_active"])
-                messages.success(request, f"Status de {usuario_base.tipo} atualizado com sucesso!")
+            # Checkbox envia 'on' quando marcado
+            usuario_base.is_active = request.POST.get("is_active") == "on"
+
+            # Somente ADMIN pode alterar o tipo do usuário
+            if request.user.tipo == "admin":
+                tipo_novo = request.POST.get("tipo", "").strip()
+                tipos_validos = dict(Usuario.TIPO_USUARIO).keys()
+
+                if tipo_novo in tipos_validos:
+                    usuario_base.tipo = tipo_novo
+
+                    usuario_base.save(update_fields=["is_active", "tipo"])
+                else:
+                    usuario_base.save(update_fields=["is_active"])
             else:
-                messages.error(request, "Erro ao atualizar status. O campo 'Conta Ativa?' não é válido.")
+                # Atendente e outros só podem mexer em is_active
+                usuario_base.save(update_fields=["is_active"])
+
+            messages.success(request, "Status atualizado com sucesso!")
+            return redirect("editar_usuario", pk=usuario_base.pk)
+
+
 
         elif action == "update_profile":
             valid = perfil_form.is_valid()
@@ -221,11 +247,20 @@ class EditarUsuarioView(AdminOrAtendenteRequiredMixin, View):
                 valid = valid and paciente_form.is_valid()
 
             if valid:
+                # Salva usuário (inclui foto via PerfilForm)
                 perfil_form.save()
+
                 if medico_form:
-                    medico_form.save()
+                    medico_obj = medico_form.save(commit=False)
+                    if getattr(medico_obj, "usuario_id", None) is None:
+                        medico_obj.usuario = usuario_base
+                    medico_obj.save()
+
                 if paciente_form:
-                    paciente_form.save()
+                    paciente_obj = paciente_form.save(commit=False)
+                    if getattr(paciente_obj, "usuario_id", None) is None:
+                        paciente_obj.usuario = usuario_base
+                    paciente_obj.save()
 
                 messages.success(request, f"Perfil do {usuario_base.tipo} atualizado com sucesso!")
                 return redirect("editar_usuario", pk=usuario_base.pk)
@@ -242,7 +277,7 @@ class EditarUsuarioView(AdminOrAtendenteRequiredMixin, View):
         return render(request, "templates_usuarios/editar_usuario.html", context)
 
 
-class MedicoListView(AdminRequiredMixin, ListView):
+class MedicoListView(AdminOrAtendenteRequiredMixin, ListView):
     model = Medico
     template_name = "templates_usuarios/listar_medicos.html"
     context_object_name = "medicos"
@@ -306,7 +341,6 @@ class AtendenteDeleteView(AdminRequiredMixin, DeleteView):
         messages.success(request, "Atendente excluído com sucesso!")
         return super().delete(request, *args, **kwargs)
 
-
 class PacienteListView(AdminOrAtendenteRequiredMixin, ListView):
     model = Paciente
     template_name = "templates_usuarios/listar_pacientes.html"
@@ -341,35 +375,121 @@ class PacienteDeleteView(AdminRequiredMixin, DeleteView):
         messages.success(self.request, "Paciente excluído com sucesso!")
         return super().delete(request, *args, **kwargs)
 
+from django.shortcuts import render, redirect
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth.forms import PasswordChangeForm
+from django.contrib.auth import update_session_auth_hash
+from django.contrib import messages
+# Importe aqui todos os Forms e Models que você usa:
+# from .forms import PerfilForm, MedicoExtraForm, PacienteExtraForm
+# from django.contrib.auth import get_user_model
+
+
+from django.shortcuts import render, redirect
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth.forms import PasswordChangeForm
+from django.contrib.auth import update_session_auth_hash
+from django.contrib import messages
+# Importe aqui todos os Forms e Models que você usa:
+# from .forms import PerfilForm, MedicoExtraForm, PacienteExtraForm
+# from django.contrib.auth import get_user_model
+
 
 @login_required
 def perfil(request):
     user = request.user
-    perfil_form = PerfilForm(request.POST or None, request.FILES or None, instance=request.user)
-    senha_form = PasswordChangeForm(user=request.user, data=request.POST or None)
+    
+    # 1. ESTADO INICIAL (GET): Todos os forms são instanciados a partir do objeto 'user'
+    perfil_form = PerfilForm(instance=user)
+    senha_form = PasswordChangeForm(user=user)
+    medico_form = None
+    paciente_form = None
 
-    medico_form = paciente_form = None
     if user.tipo == "medico":
-        medico_form = MedicoExtraForm(request.POST or None, instance=getattr(user, "medico", None))
+        medico_form = MedicoExtraForm(instance=getattr(user, "medico", None))
     elif user.tipo == "paciente":
-        paciente_form = PacienteExtraForm(request.POST or None, instance=getattr(user, "paciente", None))
+        paciente_form = PacienteExtraForm(instance=getattr(user, "paciente", None))
 
+
+    # 2. TRATAMENTO DO POST: Foco no isolamento e na 'action'
     if request.method == "POST":
-        valid = perfil_form.is_valid()
-        if medico_form:
-            valid = valid and medico_form.is_valid()
-        if paciente_form:
-            valid = valid and paciente_form.is_valid()
-
-        if valid:
-            perfil_form.save()
+        action = request.POST.get("action")
+        
+        # --- AÇÃO 1: ATUALIZAR PERFIL (Dados principais e Foto/Remoção via ModelForm) ---
+        if action == "update_profile":
+            # 1. Instancia o formulário de Perfil com os dados submetidos
+            perfil_form = PerfilForm(request.POST, request.FILES, instance=user)
+            
+            # 2. Instancia os formulários extras (Médico/Paciente) com os dados submetidos
+            if user.tipo == "medico":
+                medico_form = MedicoExtraForm(request.POST, instance=getattr(user, "medico", None))
+            elif user.tipo == "paciente":
+                paciente_form = PacienteExtraForm(request.POST, instance=getattr(user, "paciente", None))
+            
+            # 3. Validação Isolada
+            valid = perfil_form.is_valid()
             if medico_form:
-                medico_form.save()
+                valid = valid and medico_form.is_valid()
             if paciente_form:
-                paciente_form.save()
-            messages.success(request, "Dados atualizados com sucesso!")
+                valid = valid and paciente_form.is_valid()
+
+            if valid:
+                # O save aqui cuida da remoção/upload da foto graças ao clean_foto e instance=user
+                perfil_form.save() 
+                
+                # Salva os extras
+                if medico_form:
+                    medico_obj = medico_form.save(commit=False)
+                    if not medico_obj.pk: # Se for a primeira vez
+                        medico_obj.usuario = user
+                    medico_obj.save()
+                if paciente_form:
+                    paciente_obj = paciente_form.save(commit=False)
+                    if not paciente_obj.pk: # Se for a primeira vez
+                        paciente_obj.usuario = user
+                    paciente_obj.save()
+
+                messages.success(request, "Dados de perfil atualizados com sucesso!")
+                return redirect("perfil")
+            else:
+                messages.error(request, "Erro ao salvar dados de perfil. Verifique os campos com erros.")
+                
+                # SE HOUVER ERRO AQUI: perfil_form e os extras mantêm os erros e são re-renderizados.
+                # O senha_form é re-instanciado limpo (para isolar os erros).
+                senha_form = PasswordChangeForm(user=user)
+
+        # --- AÇÃO 2: TROCAR SENHA ---
+        elif action == "change_password":
+            # 1. Instancia APENAS o formulário de Senha com os dados submetidos
+            senha_form = PasswordChangeForm(user=user, data=request.POST)
+
+            if senha_form.is_valid():
+                user = senha_form.save()
+                update_session_auth_hash(request, user)  
+                messages.success(request, "Senha atualizada com sucesso!")
+                return redirect("perfil")
+            else:
+                messages.error(request, "Erro ao atualizar a senha. Verifique os dados.")
+
+            # SE HOUVER ERRO AQUI: O senha_form mantém os erros e é re-renderizado.
+            # Os outros forms (perfil e extras) são re-instanciados limpos (isolando o erro de senha).
+            perfil_form = PerfilForm(instance=user)
+            if user.tipo == "medico":
+                medico_form = MedicoExtraForm(instance=getattr(user, "medico", None))
+            elif user.tipo == "paciente":
+                paciente_form = PacienteExtraForm(instance=getattr(user, "paciente", None))
+        
+        
+        # --- AÇÃO 3: Ação não mapeada (Onde caía o erro) ---
+        else:
+            # Se a remoção de foto vier aqui, o problema é no template que está 
+            # chamando a action='remover_foto' para a View 'perfil', quando deveria
+            # chamar a View 'remover_foto' OU o botão 'remover foto' deveria ter sido 
+            # removido em favor da checkbox de limpeza no formulário principal.
+            messages.error(request, f"Ação desconhecida: {action}. Verifique a submissão do formulário.")
             return redirect("perfil")
 
+    # 3. RENDERIZAÇÃO: Retorna os forms (com ou sem erros isolados)
     return render(
         request,
         "templates_usuarios/perfil.html",
@@ -381,14 +501,22 @@ def perfil(request):
             "user": user,
         },
     )
-
-
 @login_required
 def remover_foto(request):
+    # Garante que a requisição é POST para segurança
+    if request.method != 'POST':
+        return redirect("perfil") 
+
     user = request.user
-    if user.foto:
-        user.foto.delete()
-        user.foto = None
-        user.save()
-    messages.success(request, "Foto removida com sucesso!")
+    try:
+        if user.foto:
+            user.foto.delete(save=False)
+            user.foto = None
+            user.save(update_fields=["foto"])
+            messages.success(request, "Foto removida com sucesso!")
+        else:
+            messages.info(request, "Usuário não possui foto para remover.")
+    except Exception as e:
+        # É bom logar o erro 'e' aqui
+        messages.error(request, "Erro ao remover a foto. Tente novamente mais tarde.")
     return redirect("perfil")

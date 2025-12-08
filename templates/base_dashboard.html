@@ -30,10 +30,6 @@
                 <i class="fa fa-calendar"></i> Consultas
             </a>
 
-            <a href="{% url 'listar_avisos' %}" class="{% if '/avisos/' in request.path %}active{% endif %}">
-                <i class="fa fa-clock"></i> Avisos
-            </a>
-
 
         {% elif user.tipo == 'medico' %}
 
@@ -41,19 +37,22 @@
                 <i class="fa fa-user"></i> Meu Perfil
             </a>
 
+            <a href="{% url 'gerenciar_agenda' %}" class="{% if '/agenda/' in request.path %}active{% endif %}">
+                <i class="fa fa-calendar-check-o"></i> Gerenciar Agenda
+            </a>
+
             <a href="{% url 'listar_consultas' %}" class="{% if '/consultas/' in request.path %}active{% endif %}">
                 <i class="fa fa-calendar"></i> Minhas Consultas
             </a>
-
-            <a href="{% url 'listar_avisos' %}" class="{% if '/avisos/' in request.path %}active{% endif %}">
-                <i class="fa fa-clock"></i> Avisos de Ausência
-            </a>
-
 
         {% elif user.tipo == 'atendente' %}
 
             <a href="{% url 'perfil' %}" class="{% if request.path == '/perfil/' %}active{% endif %}">
                 <i class="fa fa-user"></i> Meu Perfil
+            </a>
+
+            <a href="{% url 'listar_medicos' %}" class="{% if '/medicos/' in request.path %}active{% endif %}">
+                <i class="fa fa-user-md"></i> Médicos
             </a>
 
             <a href="{% url 'listar_pacientes' %}" class="{% if '/pacientes/' in request.path %}active{% endif %}">
@@ -71,7 +70,7 @@
                 <i class="fa fa-user"></i> Meu Perfil
             </a>
 
-            <a href="{% url 'listar_consultas' %}" class="{% if '/consultas/' in request.path %}active{% endif %}">
+            <a href="{% url 'minhas_consultas_paciente' %}" class="{% if '/consultas/' in request.path %}active{% endif %}">
                 <i class="fa fa-calendar"></i> Minhas Consultas
             </a>
 

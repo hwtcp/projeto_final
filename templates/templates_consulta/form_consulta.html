@@ -1,12 +1,109 @@
-{% extends 'base.html' %}
-{% block content %}
-<h2 style="color:#2e7d32; font-weight:600;">{{ titulo }}</h2>
+{% extends "base_dashboard.html" %} 
+{% load static %}
+{% load widget_tweaks %}
 
-<form method="post" enctype="multipart/form-data" style="max-width:600px;">
-    {% csrf_token %}
-    {{ form.as_p }}
+{% block title %}Confirmar Agendamento{% endblock %}
 
-    <button type="submit" style="background-color:#2e7d32; color:white; padding:10px 20px; border:none; border-radius:8px;">Salvar</button>
-    <a href="{% url 'listar_consultas' %}" style="margin-left:10px; color:#1565c0;">Cancelar</a>
-</form>
+{% block dashboard_content %}
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8 col-lg-6">
+            
+            <h2 class="mb-4 text-center text-success">
+                <i class="fas fa-calendar-alt me-2"></i> Confirmar Agendamento
+            </h2>
+
+            <div class="card shadow">
+                <div class="card-body p-4">
+
+                    <form method="post">
+                        {% csrf_token %}
+
+                        {% if form.non_field_errors %}
+                            <div class="alert alert-danger">
+                                {% for error in form.non_field_errors %}
+                                    <p class="mb-0">{{ error }}</p>
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                        
+                        <div class="card border-success bg-light mb-4">
+                            <div class="card-body">
+                                <h5 class="card-title text-success mb-3">Sua Consulta está marcada para:</h5>
+                                
+                                <p class="mb-2 lead">
+                                    <i class="fas fa-user-md text-primary me-2"></i>
+                                    <span class="fw-bold">Médico(a):</span>
+                                    {{ medico_nome|default:"Não informado" }}
+                                </p>
+
+                                <p class="mb-0 lead">
+                                    <i class="fas fa-clock text-success me-2"></i>
+                                    <span class="fw-bold">Data e Hora:</span>
+                                    <span class="text-success">
+                                        {% if horario_selecionado %}
+                                            {{ horario_selecionado|date:"d/m/Y \\à\\s H:i" }}
+                                        {% else %}
+                                            Nenhum
+                                        {% endif %}
+                                    </span>
+                                </p>
+
+                                <p class="text-muted small mt-3">
+                                    Preencha os dados abaixo para concluir o agendamento.
+                                </p>
+                            </div>
+                        </div>
+
+                        <div class="form-group mb-3">
+                            <label for="{{ form.paciente.id_for_label }}" class="fw-bold">
+                                {{ form.paciente.label }}
+                            </label>
+                            {% render_field form.paciente class="form-select" %}
+
+                            {% if form.paciente.errors %}
+                                <small class="text-danger d-block">{{ form.paciente.errors }}</small>
+                            {% endif %}
+                            
+                            <div class="mt-2 text-end">
+                                <a href="{% url 'criar_paciente' %}" class="btn btn-sm btn-outline-secondary">
+                                    <i class="fas fa-user-plus me-1"></i> Paciente não cadastrado?
+                                </a>
+                            </div>
+                        </div>
+
+                        <div class="form-group form-check mb-3">
+                            {% render_field form.retorno class="form-check-input" %}
+                            <label class="form-check-label fw-bold" for="{{ form.retorno.id_for_label }}">
+                                {{ form.retorno.label }}
+                            </label>
+                        </div>
+
+                        <div class="form-group mb-3">
+                            <label for="{{ form.sintomas.id_for_label }}" class="fw-bold">
+                                {{ form.sintomas.label }}
+                            </label>
+                            {% render_field form.sintomas class="form-control" rows="3" %}
+                            
+                            {% if form.sintomas.errors %}
+                                <small class="text-danger">{{ form.sintomas.errors }}</small>
+                            {% endif %}
+                        </div>
+
+                        {{ form.medico }}
+                        {{ form.data_hora_inicio }}
+                        {{ form.data_hora_fim }}
+                        {{ form.status }}
+
+                        <button type="submit" class="btn btn-success btn-lg w-100 mt-4">
+                            <i class="fas fa-check-circle me-2"></i> Confirmar Agendamento
+                        </button>
+                    </form>
+
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
 {% endblock %}

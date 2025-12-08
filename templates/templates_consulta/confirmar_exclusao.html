@@ -1,0 +1,95 @@
+{% extends 'base_dashboard.html' %} 
+{% load static %}
+
+{% block dashboard_content %}
+<h1 class="listagem-titulo">🗑️ Confirmar Exclusão</h1>
+
+<div class="row-container">
+    <div class="col-8">
+        <div class="card p-4 card-exclusao">
+            
+            <p class="aviso-exclusao">
+                Você está prestes a excluir o seguinte registro permanentemente. Esta ação não poderá ser desfeita.
+            </p>
+
+            <h3 class="item-a-excluir">
+                {% comment %} 
+                O 'object' é a instância do modelo (HorarioTrabalho, ExcecaoHorario ou Consulta) 
+                que está sendo excluída. O método __str__ do modelo será chamado aqui.
+                {% endcomment %}
+                {{ object }}
+            </h3>
+
+            <p class="pergunta-confirmacao">
+                Tem certeza que deseja continuar?
+            </p>
+
+            <form method="post" class="form-confirmacao">
+                {% csrf_token %}
+                
+                <div class="action-buttons mt-4">
+                    <button type="submit" class="btn btn-danger">Sim, Excluir Definitivamente</button>
+                    <a href="{% url 'gerenciar_agenda' %}" class="btn btn-secondary">Não, Cancelar e Voltar</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<style>
+/* Estilos Específicos para a Confirmação */
+.row-container {
+    display: flex;
+    justify-content: center;
+}
+.col-8 {
+    width: 66%;
+}
+.card-exclusao {
+    background-color: #fff;
+    border: 1px solid #dc3545; /* Borda vermelha para alertar */
+    border-radius: 8px;
+    padding: 30px;
+    text-align: center;
+}
+.aviso-exclusao {
+    color: #dc3545;
+    font-weight: bold;
+    font-size: 1.1em;
+    margin-bottom: 20px;
+}
+.item-a-excluir {
+    font-size: 1.4em;
+    color: #343a40;
+    padding: 15px;
+    background-color: #f8f9fa;
+    border-radius: 4px;
+    border: 1px solid #dee2e6;
+    margin-bottom: 20px;
+}
+.pergunta-confirmacao {
+    font-size: 1.2em;
+    margin-bottom: 25px;
+}
+
+/* Botões de Ação */
+.btn {
+    padding: 10px 15px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: bold;
+    text-decoration: none;
+    display: inline-block;
+    margin: 5px;
+}
+.btn-danger {
+    background-color: #dc3545;
+    color: white;
+}
+.btn-secondary {
+    background-color: #6c757d;
+    color: white;
+}
+</style>
+{% endblock %}

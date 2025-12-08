@@ -1,0 +1,170 @@
+{% extends 'base_dashboard.html' %} 
+{% load static %}
+{% load humanize %} 
+
+{% block title %}Minhas Consultas{% endblock %}
+
+{% block dashboard_content %}
+<h1 class="listagem-titulo">📅 Minhas Consultas</h1>
+
+<div class="header-actions">
+    <p>Total de Consultas: <strong>{{ consultas|length }}</strong></p>
+    {# Não há botão de agendamento, pois o fluxo do médico é gerenciar pela agenda. #}
+</div>
+
+{% if messages %}
+    {% for message in messages %}
+        <div class="alert alert-{{ message.tags }}">
+            {{ message }}
+        </div>
+    {% endfor %}
+{% endif %}
+
+{% if consultas %}
+<div class="table-responsive">
+    <table class="table table-striped table-hover">
+        <thead>
+            <tr>
+                <th>Data e Hora</th>
+                <th>Paciente</th>
+                {# A coluna Médico foi omitida #}
+                <th>Status</th>
+                <th>Retorno</th>
+                <th>Ações</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for consulta in consultas %}
+            <tr class="status-{{ consulta.status }}">
+                <td>{{ consulta.data_hora_inicio|date:"d/m/Y" }} às {{ consulta.data_hora_inicio|time:"H:i" }}</td>
+                <td>{{ consulta.paciente.usuario.nome_completo }}</td>
+                <td>
+                    <span class="badge status-{{ consulta.status }}">
+                        {{ consulta.get_status_display }}
+                    </span>
+                </td>
+                <td>
+                    {% if consulta.retorno %}
+                        <span class="badge badge-info">Sim</span>
+                    {% else %}
+                        <span class="badge badge-secondary">Não</span>
+                    {% endif %}
+                </td>
+                <td class="actions-cell">
+                    <a href="{% url 'editar_consulta' consulta.pk %}" class="btn-action btn-edit" title="Editar Status/Detalhes">
+                        ✏️
+                    </a>
+                    {# A remoção da consulta é geralmente feita apenas pelo Admin. O médico usa o status 'cancelada'. #}
+                    {% comment %} 
+                    Se o médico puder deletar:
+                    <a href="{% url 'deletar_consulta' consulta.pk %}" class="btn-action btn-delete" title="Excluir">
+                        ❌
+                    </a>
+                    {% endcomment %}
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% else %}
+    <div class="info-message">
+        <p>Você não possui consultas agendadas.</p>
+    </div>
+{% endif %}
+
+<style>
+/* Estilos Gerais (MANTIDOS do seu código original) */
+.listagem-titulo {
+    border-bottom: 2px solid #007bff;
+    padding-bottom: 5px;
+    margin-bottom: 20px;
+}
+.header-actions {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+.btn-primary {
+    background-color: #007bff;
+    color: white;
+    padding: 8px 15px;
+    border-radius: 5px;
+    text-decoration: none;
+    font-weight: bold;
+}
+.alert {
+    padding: 10px;
+    margin-bottom: 15px;
+    border-radius: 4px;
+}
+.info-message {
+    padding: 20px;
+    background-color: #f8f9fa;
+    border: 1px solid #dee2e6;
+    border-radius: 4px;
+    text-align: center;
+}
+
+/* Tabela */
+.table-responsive {
+    overflow-x: auto;
+}
+.table {
+    width: 100%;
+    border-collapse: collapse;
+    background-color: white;
+    border-radius: 8px;
+    overflow: hidden; 
+}
+.table th, .table td {
+    padding: 12px 15px;
+    text-align: left;
+    border-bottom: 1px solid #dee2e6;
+}
+.table thead th {
+    background-color: #f8f9fa;
+    font-weight: bold;
+    color: #343a40;
+}
+.table-striped tbody tr:nth-of-type(odd) {
+    background-color: #f3f3f3;
+}
+.table-hover tbody tr:hover {
+    background-color: #e9ecef;
+}
+
+/* Badges e Status */
+.badge {
+    padding: 5px 10px;
+    border-radius: 0.25rem;
+    font-size: 0.8em;
+    font-weight: bold;
+    color: white;
+}
+.status-agendada { background-color: #007bff; }
+.status-confirmada { background-color: #20c997; } 
+.status-concluida { background-color: #28a745; }
+.status-cancelada { background-color: #dc3545; }
+.badge-info { background-color: #17a2b8; }
+.badge-secondary { background-color: #6c757d; }
+
+/* Ações */
+.actions-cell {
+    white-space: nowrap;
+}
+.btn-action {
+    display: inline-block;
+    padding: 4px 8px;
+    text-decoration: none;
+    font-size: 1.1em;
+    border-radius: 4px;
+    margin-right: 5px;
+    transition: transform 0.2s;
+}
+.btn-action:hover {
+    transform: scale(1.1);
+}
+</style>
+{% endblock %}

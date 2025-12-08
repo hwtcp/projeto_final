@@ -1,34 +1,161 @@
-{% extends 'base.html' %}
-{% block content %}
-<h2 style="color:#2e7d32; font-weight:600;">Consultas Cadastradas</h2>
+{% extends 'base_dashboard.html' %}
+{% load static %}
+{% load humanize %}
 
-<a href="{% url 'criar_consulta' %}" style="background-color:#2e7d32; color:white; padding:10px 15px; border-radius:8px; text-decoration:none;">+ Nova Consulta</a>
+{% block title %}Listagem Completa de Consultas{% endblock %}
 
-<table border="1" cellspacing="0" cellpadding="10" style="width:100%; margin-top:20px; border-collapse:collapse;">
-    <thead style="background-color:#e8f5e9;">
-        <tr>
-            <th>Paciente</th>
-            <th>Médico</th>
-            <th>Data</th>
-            <th>Retorno</th>
-            <th>Ações</th>
-        </tr>
-    </thead>
-    <tbody>
-        {% for consulta in consultas %}
-        <tr>
-            <td>{{ consulta.paciente }}</td>
-            <td>{{ consulta.medico }}</td>
-            <td>{{ consulta.data|date:"d/m/Y H:i" }}</td>
-            <td>{{ consulta.retorno|yesno:"Sim,Não" }}</td>
-            <td>
-                <a href="{% url 'editar_consulta' consulta.pk %}" style="color:#1565c0;">Editar</a> |
-                <a href="{% url 'deletar_consulta' consulta.pk %}" style="color:#c62828;">Excluir</a>
-            </td>
-        </tr>
-        {% empty %}
-        <tr><td colspan="5" style="text-align:center;">Nenhuma consulta cadastrada.</td></tr>
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/home.css' %}">
+<style>
+/* (mantive seus estilos anteriores, apenas pequenos ajustes visuais) */
+.listagem-titulo { margin-bottom: 0.75rem; }
+.header-actions { display:flex; gap:1rem; align-items:center; justify-content:space-between; margin-bottom:1rem; }
+.header-actions .btn { white-space:nowrap; }
+.table-responsive { margin-top:0.5rem; }
+.table td, .table th { vertical-align: middle; }
+.badge { padding:0.35rem 0.6rem; border-radius:.25rem; font-size:.8rem; font-weight:700; color:#fff; }
+.status-agendada{background:#007bff} .status-confirmada{background:#20c997} .status-concluida{background:#28a745} .status-cancelada{background:#dc3545}
+.badge-info{background:#17a2b8} .badge-secondary{background:#6c757d}
+.actions-cell { white-space:nowrap; }
+.btn-action{ display:inline-flex; align-items:center; justify-content:center; padding:4px 8px; font-size:1.05rem; border-radius:4px; margin-right:6px; transition:transform .15s; background:none; border:none; cursor:pointer; color:inherit; }
+.btn-action:hover{ transform:scale(1.08); }
+.btn-complete{ color:#28a745 } .btn-complete:hover{ color:#208d3d }
+.info-message{ padding:1rem; background:#fff; border-radius:6px; box-shadow:0 1px 2px rgba(0,0,0,0.04); }
+
+/* FILTRO */
+.filter-row { display:flex; gap:1rem; align-items:center; margin-bottom:.75rem; flex-wrap:wrap; }
+.filter-row .form-select { min-width:220px; }
+
+/* PAGINAÇÃO */
+.pagination { margin:1rem 0; display:flex; gap:.35rem; flex-wrap:wrap; }
+.page-link { padding:.4rem .6rem; border-radius:.25rem; border:1px solid #e9ecef; text-decoration:none; color:inherit; }
+.page-item.active .page-link { background:#0d6efd; color:#fff; border-color:#0d6efd; }
+.page-link:hover { text-decoration:none; transform:translateY(-1px); }
+
+/* Responsivo */
+@media (max-width:576px){ .header-actions{ flex-direction:column; align-items:stretch } .filter-row{ flex-direction:column; align-items:stretch } }
+</style>
+{% endblock %}
+
+{% block dashboard_content %}
+<h1 class="listagem-titulo">📋 Listagem de Consultas (Todos os Médicos)</h1>
+
+<div class="header-actions">
+    <p>Total de Consultas: <strong>
+    {% if page_obj %}
+        {{ page_obj.paginator.count }}
+    {% else %}
+        {{ consultas|length }}
+    {% endif %}
+</strong></p>
+
+
+    <a href="{% url 'listar_medicos' %}" class="btn btn-primary">➕ Agendar Nova Consulta</a>
+</div>
+
+{# FILTRO POR MÉDICO (envia via GET) #}
+<form method="get" class="filter-row" role="search" aria-label="Filtrar consultas por médico">
+    <label for="id_medico" class="visually-hidden">Filtrar por médico</label>
+    <select id="id_medico" name="medico" class="form-select">
+    <option value="">— Todos os Médicos —</option>
+
+    {% if medicos %}
+        {% for medico in medicos %}
+            <option value="{{ medico.pk }}"
+                {% if filtro_medico and filtro_medico|stringformat:"s" == medico.pk|stringformat:"s" %}selected{% endif %}>
+                {{ medico.usuario.nome_completo }}
+            </option>
         {% endfor %}
-    </tbody>
-</table>
+    {% else %}
+        <option value="" disabled>Não há médicos cadastrados</option>
+    {% endif %}
+</select>
+
+
+    <div class="d-flex gap-2">
+        <button type="submit" class="btn btn-outline-primary">Filtrar</button>
+        <a href="{% url request.resolver_match.url_name %}" class="btn btn-outline-secondary" title="Limpar filtro">Limpar</a>
+    </div>
+</form>
+
+{% if messages %}
+    {% for message in messages %}
+        <div class="alert alert-{{ message.tags }}">{{ message }}</div>
+    {% endfor %}
+{% endif %}
+
+{% if page_obj and page_obj.object_list %}
+    {# Usando page_obj (paginado) #}
+    <div class="table-responsive">
+        <table class="table table-striped table-hover">
+            <thead>
+                <tr>
+                    <th>Data e Hora</th>
+                    <th>Paciente</th>
+                    <th>Médico</th>
+                    <th>Status</th>
+                    <th>Retorno</th>
+                    <th>Ações</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for consulta in page_obj.object_list %}
+                <tr class="status-{{ consulta.status }}">
+                    <td>{{ consulta.data_hora_inicio|date:"d/m/Y" }} às {{ consulta.data_hora_inicio|time:"H:i" }}</td>
+                    <td>{{ consulta.paciente.usuario.nome_completo }}</td>
+                    <td>{{ consulta.medico.usuario.nome_completo }}</td>
+                    <td><span class="badge status-{{ consulta.status }}">{{ consulta.get_status_display }}</span></td>
+                    <td>
+                        {% if consulta.retorno %}
+                            <span class="badge badge-info">Sim</span>
+                        {% else %}
+                            <span class="badge badge-secondary">Não</span>
+                        {% endif %}
+                    </td>
+                    <td class="actions-cell">
+                        {% if consulta.status == 'agendada' or consulta.status == 'confirmada' %}
+                            <form method="post" action="{% url 'marcar_concluida' consulta.pk %}" style="display:inline;">
+                                {% csrf_token %}
+                                <button type="submit" class="btn-action btn-complete" title="Marcar como Concluída" aria-label="Marcar como Concluída" onclick="return confirm('Deseja realmente marcar esta consulta como CONCLUÍDA?');">✅</button>
+                            </form>
+                        {% endif %}
+                        <a href="{% url 'deletar_consulta' consulta.pk %}" class="btn-action text-danger" title="Excluir consulta" aria-label="Excluir consulta">❌</a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    {# PAGINAÇÃO: preserva o filtro 'medico' ao navegar nas páginas #}
+    {% with paginator=page_obj.paginator %}
+    {% if paginator.num_pages > 1 %}
+    <nav aria-label="Navegação de páginas">
+        <ul class="pagination">
+            {# Previous #}
+            <li class="page-item {% if not page_obj.has_previous %}disabled{% endif %}">
+                <a class="page-link" href="?page={{ page_obj.previous_page_number }}{% if request.GET.medico %}&medico={{ request.GET.medico }}{% endif %}" aria-label="Página anterior">«</a>
+            </li>
+
+            {# Página numerada (mostra todas; você pode limitar se quiser) #}
+            {% for i in paginator.page_range %}
+                <li class="page-item {% if page_obj.number == i %}active{% endif %}">
+                    <a class="page-link" href="?page={{ i }}{% if request.GET.medico %}&medico={{ request.GET.medico }}{% endif %}">{{ i }}</a>
+                </li>
+            {% endfor %}
+
+            {# Next #}
+            <li class="page-item {% if not page_obj.has_next %}disabled{% endif %}">
+                <a class="page-link" href="?page={{ page_obj.next_page_number }}{% if request.GET.medico %}&medico={{ request.GET.medico }}{% endif %}" aria-label="Próxima página">»</a>
+            </li>
+        </ul>
+    </nav>
+    {% endif %}
+    {% endwith %}
+
+{% else %}
+    <div class="info-message">
+        <p>Nenhuma consulta encontrada com esse filtro.</p>
+    </div>
+{% endif %}
 {% endblock %}

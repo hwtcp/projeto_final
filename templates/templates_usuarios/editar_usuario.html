@@ -32,15 +32,18 @@
         <div class="perfil-actions-form">
             <h4 class="perfil-section-legend" style="margin-top: 20px;">Status da Conta</h4>
             <form method="POST" action="{% url 'editar_usuario' usuario_base.pk %}">
-                {% csrf_token %}
-                <div class="perfil-form-group">
-                    <label for="{{ perfil_form.is_active.id_for_label }}">Conta Ativa?</label>
-                    {{ perfil_form.is_active }}
-                    {% if perfil_form.is_active.errors %}<div class="error-message">{{ perfil_form.is_active.errors }}</div>{% endif %}
-                </div>
-                <input type="hidden" name="action" value="update_status">
-                <button type="submit" class="perfil-btn-principal">Atualizar Status</button>
-            </form>
+                    {% csrf_token %}
+
+                    <div class="perfil-form-group">
+                        <label for="id_is_active">Conta Ativa?</label>
+                        <input type="checkbox" id="id_is_active" name="is_active"
+                            {% if usuario_base.is_active %}checked{% endif %}>
+                    </div>
+
+                    <input type="hidden" name="action" value="update_status">
+
+                    <button type="submit" class="perfil-btn-principal">Atualizar Status</button>
+                </form>
             
             <p class="photo-hint" style="margin-top: 20px;">
                 ID do Usuário: **#{{ usuario_base.pk }}**<br>

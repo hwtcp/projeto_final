@@ -4,9 +4,7 @@
 {% block dashboard_content %}
 <link rel="stylesheet" href="{% static 'css/listagem.css' %}"> 
 <style>
-/* ------------------------------------ */
-/* CSS SIMPLIFICADO DE DETALHES (Pode estar em listagem.css ou aqui) */
-/* ------------------------------------ */
+
 .detalhes-container {
     max-width: 900px;
     margin: 0 auto;
@@ -116,7 +114,7 @@
 
     <div class="detalhes-grid">
         <div class="detalhes-card-base">
-            <img src="{% if usuario.foto %}{{ usuario.foto.url }}{% else %}{% static 'img/default_user.png' %}{% endif %}" alt="Foto de Perfil" class="detalhes-foto">
+            <img src="{% if usuario.foto %}{{ usuario.foto.url }}{% else %}{% static 'img/default_user.png' %}{% endif %}" class="detalhes-foto">
             
             <h3 class="tipo-badge">{{ usuario.tipo|upper }}</h3>
 
@@ -147,20 +145,26 @@
                 <div class="detalhes-info-secao">
                     <p><strong>CRM:</strong> {{ objeto_extra.crm }}</p>
                     <p><strong>Especialidade:</strong> {{ objeto_extra.especialidade }}</p>
-                    <p><strong>Custo:</strong> R$ {{ objeto_extra.custo_consulta|floatformat:2 }}</p>
                 </div>
             
             {% elif usuario.tipo == 'paciente' and objeto_extra %}
                 <h2 class="detalhes-titulo-secao" style="margin-top: 30px;">Dados do Paciente</h2>
                  <div class="detalhes-info-secao">
-                    <p><strong>Nascimento:</strong> {{ objeto_extra.data_nascimento|date:"d/m/Y" }}</p>
-                    <p><strong>Gênero:</strong> {{ objeto_extra.genero|default:'N/A' }}</p>
-                    <p><strong>Histórico:</strong> {{ objeto_extra.historico_medico|default:'N/A'|linebreaksbr }}</p>
+                    <p><strong>Nascimento:</strong> {{ usuario.data_nascimento|date:"d/m/Y" }}</p>
+                    <p><strong>Peso:</strong> {{ objeto_extra.peso|default:'N/A' }}</p>
+                    <p><strong>Altura:</strong> {{ objeto_extra.altura|default:'N/A'|linebreaksbr }}</p>
+                 </div>
+
+            {% elif usuario.tipo == 'atendente' and objeto_extra %}
+                <h2 class="detalhes-titulo-secao" style="margin-top: 30px;">Dados do Atendente</h2>
+                 <div class="detalhes-info-secao">
+                    <p><strong>Nascimento:</strong> {{ usuario.data_nascimento|date:"d/m/Y" }}</p>
+                    <p><strong>CPF:</strong> {{ usuario.cpf}}</p>
                  </div>
             
             {% endif %}
 
-            <h2 class="detalhes-titulo-secao" style="margin-top: 30px;">Endereço</h2>
+            <h2 class="detalhes-titulo-secao" style="margin-top: 30px;">CEP</h2>
             <div class="detalhes-info-secao">
                 <p>{{ usuario.endereco|default:'Endereço não cadastrado.' }}</p>
             </div>

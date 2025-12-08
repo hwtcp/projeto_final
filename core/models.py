@@ -2,7 +2,6 @@ from django.db import models
 from django.contrib.auth.models import AbstractUser
 from django.conf import settings
 
-
 class Usuario(AbstractUser):
     nome_completo = models.CharField(max_length=150)
     cpf = models.CharField(max_length=14, unique=True)
@@ -54,7 +53,6 @@ class Paciente(models.Model):
     usuario = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     peso = models.DecimalField(max_digits=5, decimal_places=2, null=True, blank=True)
     altura = models.DecimalField(max_digits=4, decimal_places=2, null=True, blank=True)
-    historico_medico = models.TextField(blank=True, null=True)
 
     def __str__(self):
         return self.usuario.nome_completo

@@ -1,0 +1,131 @@
+{% extends "base_dashboard.html" %}
+{% load static %}
+
+{% block dashboard_content %}
+<link rel="stylesheet" href="{% static 'css/profile_cards.css' %}">
+
+<h1 class="perfil-title">
+    Editar Consulta — {{ consulta.paciente.usuario.nome_completo }}
+</h1>
+
+{% if messages %}
+<div class="messages-container">
+    {% for message in messages %}
+        <div class="alert alert-{{ message.tags }}">{{ message }}</div>
+    {% endfor %}
+</div>
+{% endif %}
+
+<div class="perfil-grid-container" style="grid-template-columns: 280px 1fr;">
+
+    <!-- CARD LATERAL (Info do paciente e médico) -->
+    <div class="perfil-card card-foto-opcoes">
+
+        <div class="perfil-foto-area">
+            <img src="{% static 'img/default_user.png' %}" class="perfil-foto">
+
+            <h3>{{ consulta.paciente.usuario.nome_completo }}</h3>
+            <p class="perfil-tipo-usuario">Paciente</p>
+        </div>
+
+        <div class="perfil-actions-form">
+            <h4 class="perfil-section-legend">Informações da Consulta</h4>
+
+            <p><strong>Médico:</strong><br>{{ consulta.medico.usuario.nome_completo }}</p>
+            <p><strong>Data/Hora:</strong><br>{{ consulta.data_hora_inicio|date:"d/m/Y H:i" }}</p>
+            <p><strong>Status atual:</strong><br>
+                <span class="badge bg-primary">{{ consulta.get_status_display }}</span>
+            </p>
+
+            {% if consulta.receita_virtual %}
+                <p style="margin-top: 10px;">
+                    <strong>Receita atual:</strong><br>
+                    <a href="{{ consulta.receita_virtual.url }}" target="_blank" class="perfil-btn-principal" style="padding:5px 10px; font-size: 0.9em;">
+                        📄 Baixar Receita
+                    </a>
+                </p>
+            {% endif %}
+        </div>
+    </div>
+
+
+    <!-- COLUNA PRINCIPAL COM O FORM -->
+    <div class="perfil-card card-personal-info">
+        <h2 class="perfil-card-title">Atualizar Informações Clínicas</h2>
+
+        <form method="POST" enctype="multipart/form-data">
+            {% csrf_token %}
+
+            <fieldset class="perfil-form-secao">
+                <legend class="perfil-section-legend">Descrição e Diagnóstico</legend>
+
+                <!-- Sintomas -->
+                <div class="perfil-form-row">
+                    <div class="perfil-form-group" style="flex:1 1 100%;">
+                        <label for="{{ form.sintomas.id_for_label }}">Sintomas</label>
+                        {{ form.sintomas }}
+                        {% if form.sintomas.errors %}
+                            <div class="error-message">{{ form.sintomas.errors }}</div>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <!-- Diagnóstico -->
+                <div class="perfil-form-row">
+                    <div class="perfil-form-group" style="flex:1 1 100%;">
+                        <label for="{{ form.diagnostico.id_for_label }}">Diagnóstico</label>
+                        {{ form.diagnostico }}
+                        {% if form.diagnostico.errors %}
+                            <div class="error-message">{{ form.diagnostico.errors }}</div>
+                        {% endif %}
+                    </div>
+                </div>
+            </fieldset>
+
+            <fieldset class="perfil-form-secao">
+                <legend class="perfil-section-legend">Receita Médica</legend>
+
+                <!-- Upload de Receita -->
+                <div class="perfil-form-row">
+                    <div class="perfil-form-group">
+                        <label for="{{ form.receita_virtual.id_for_label }}">Enviar nova receita</label>
+                        {{ form.receita_virtual }}
+                        {% if form.receita_virtual.errors %}
+                            <div class="error-message">{{ form.receita_virtual.errors }}</div>
+                        {% endif %}
+                    </div>
+                </div>
+            </fieldset>
+
+            <fieldset class="perfil-form-secao">
+                <legend class="perfil-section-legend">Status da Consulta</legend>
+
+                <div class="perfil-form-row">
+                    <div class="perfil-form-group" style="width: 200px;">
+                        <label for="{{ form.status.id_for_label }}">Status</label>
+                        {{ form.status }}
+                        {% if form.status.errors %}
+                            <div class="error-message">{{ form.status.errors }}</div>
+                        {% endif %}
+                    </div>
+                </div>
+            </fieldset>
+
+            <div class="actions">
+                <button class="perfil-btn-salvar" type="submit">Salvar Alterações</button>
+            </div>
+        </form>
+    </div>
+
+</div>
+
+<style>
+/* Ajuste opcional para campos do formulário ficarem 100% */
+.perfil-form-group textarea,
+.perfil-form-group select,
+.perfil-form-group input[type="file"] {
+    width: 100%;
+}
+</style>
+
+{% endblock %}

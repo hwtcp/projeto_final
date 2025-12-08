@@ -1,0 +1,60 @@
+{% extends "base_dashboard.html" %}
+{% load static %}
+
+{% block title %}
+    Horários disponíveis
+    {% if medico %} - {{ medico.usuario.nome_completo }}{% endif %}
+{% endblock %}
+
+{% block extra_css %}
+<style>
+    .btn-slot{
+        padding: 8px 12px;
+        font-weight:600;
+        min-width:80px;
+        font-size:0.95rem;
+        display:flex;
+        align-items:center;
+        justify-content:center;
+    }
+    .card-header-date{
+        font-weight:600;
+        color:#0d6efd;
+    }
+</style>
+{% endblock %}
+
+{% block dashboard_content %}
+<div class="container mt-4">
+    <h3>📅 Horários disponíveis{% if medico %} de {{ medico.usuario.nome_completo }}{% endif %}</h3>
+
+    {% if error %}
+        <div class="alert alert-warning">{{ error }}</div>
+    {% endif %}
+
+    {% if slots_disponiveis %}
+        {% for date_str, slots in slots_disponiveis.items %}
+            <div class="card shadow-sm mb-4">
+                <div class="card-header bg-light">
+                    <span class="card-header-date">{{ date_str }}</span>
+                </div>
+                <div class="card-body">
+                    <div class="row g-2">
+                        {% for slot in slots %}
+                            <div class="col-auto">
+                                <a href="{% url 'agendar_consulta_por_medico' medico.pk %}?slot={{ slot|urlencode }}"
+                                   class="btn btn-outline-success btn-slot">
+                                    <i class="fas fa-clock me-1"></i>
+                                    {{ slot|slice:"11:16" }}
+                                </a>
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    {% else %}
+        <p class="text-muted">Nenhum horário disponível nos próximos dias.</p>
+    {% endif %}
+</div>
+{% endblock %}

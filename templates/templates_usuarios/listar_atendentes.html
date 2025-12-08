@@ -104,15 +104,18 @@
             <tbody>
                 {% for atendente in atendentes %}
                 <tr>
-                    <td>{{ atendente.nome_completo }}</td>
-                    <td>{{ atendente.cpf }}</td>
-                    <td>{{ atendente.telefone }}</td>
+                    <td>{{ atendente.usuario.nome_completo }}</td>
+                    <td>{{ atendente.usuario.cpf }}</td>
+                    <td>{{ atendente.usuario.telefone }}</td>
                     <td class="td-acoes">
-                        <a href="{% url 'editar_usuario' atendente.pk %}" class="btn-details">Ver</a>
-                        <a href="{% url 'editar_usuario' atendente.pk %}" class="btn-edit">Editar</a>
+                        <!-- usar o PK do usuário relacionado -->
+                        <a href="{% url 'detalhes_usuario' atendente.usuario.pk %}" class="btn-details">Ver</a>
+                        <a href="{% url 'editar_usuario' atendente.usuario.pk %}" class="btn-edit">Editar</a>
+
+                        <!-- se sua URL de deletar espera o PK do Atendente, mantém atendente.pk -->
                         <a href="{% url 'deletar_atendente' atendente.pk %}" class="btn-delete">Excluir</a>
                     </td>
-                </tr>
+
                 {% empty %}
                 <tr>
                     <td colspan="4" class="no-data">Nenhum atendente encontrado com os filtros aplicados.</td>

@@ -28,29 +28,16 @@
         </div>
 
         <div class="perfil-actions-form">
-            <form method="POST" enctype="multipart/form-data" action="{% url 'perfil' %}">
-                {% csrf_token %}
-                <label class="perfil-btn-principal">
-                    Alterar Foto
-                    {{ perfil_form.foto }}
-                </label>
-                {% if perfil_form.foto.errors %}
-                    <div class="error-message">{{ perfil_form.foto.errors }}</div>
-                {% endif %}
-                <input type="hidden" name="action" value="update_photo">
-                <button type="submit" class="perfil-btn-secundario">Salvar Foto</button>
-            </form>
-
             {% if user.foto %}
-            <form method="POST" action="{% url 'remover_foto' %}" class="form-remove-photo">
-                {% csrf_token %}
-                <button class="perfil-btn-secundario" type="submit">Remover Foto</button>
-            </form>
+                <form method="POST" action="{% url 'remover_foto' %}"> 
+                    {% csrf_token %}
+                    <button class="perfil-btn-remover" type="submit">Remover Foto</button> 
+                </form>
             {% endif %}
+
             <p class="photo-hint">JPG ou PNG — até 5MB</p>
-        </div>
-        
-        </div>
+        </div> 	
+    </div>
 
 
     <div class="perfil-card card-personal-info">
@@ -59,11 +46,36 @@
             {% csrf_token %}
             <input type="hidden" name="action" value="update_profile">
             
+            <fieldset class="perfil-form-secao foto-secao">
+                <legend class="perfil-section-legend">Alterar Foto de Perfil</legend>
+                
+                <div class="perfil-form-group-foto">
+                    <label class="perfil-btn-principal btn-upload" for="{{ perfil_form.foto.id_for_label }}">
+                        Selecionar/Alterar Foto
+                    </label>
+                    <div class="custom-file-input-wrapper">
+                         {{ perfil_form.foto }}
+                    </div>
+
+                    {% if user.foto %}
+                        <div class="perfil-remover-foto-checkbox">
+                            <label for="{{ perfil_form.foto.id_for_label }}_clear">
+                                {{ perfil_form.foto.clear_field }} Manter/Remover a foto atual
+                            </label>
+                        </div>
+                    {% endif %}
+
+                    {% if perfil_form.foto.errors %}
+                        <div class="error-message">{{ perfil_form.foto.errors }}</div>
+                    {% endif %}
+
+                </div>
+            </fieldset>
             <fieldset class="perfil-form-secao">
                 <legend class="perfil-section-legend">Dados de Contato e Acesso</legend>
                 
                 {% for field in perfil_form %}
-                    {% if field.name != 'foto' %}
+                    {% if field.name != 'foto' %} 
                         <div class="perfil-form-row">
                             <div class="perfil-form-group">
                                 <label for="{{ field.id_for_label }}">{{ field.label }}</label>

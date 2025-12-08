@@ -1,7 +1,6 @@
 from django.db import models
 from core.models import Medico, Paciente
 
-
 class HorarioTrabalho(models.Model):
     DIAS_SEMANA = [
         (0, "Domingo"),
@@ -62,9 +61,7 @@ class Consulta(models.Model):
         max_length=20,
         choices=[
             ("agendada", "Agendada"),
-            ("confirmada", "Confirmada"),
             ("concluida", "Concluída"),
-            ("cancelada", "Cancelada"),
         ],
         default="agendada",
     )

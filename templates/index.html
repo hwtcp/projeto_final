@@ -10,7 +10,6 @@
         <div class="hero-overlay">
             <h2>Agende suas consultas de forma rápida e segura.</h2>
             <p>Conectando você aos melhores profissionais de saúde.</p>
-            <a href="#" class="btn-cta">Ver Especialidades</a> 
         </div>
     </div>
 
@@ -51,7 +50,7 @@
                     <label for="id_password">Senha:</label>
                     <div class="input-field">
                         <i class="fas fa-lock"></i>
-                        <input type="password" id="id_password" name="password" placeholder="Sua senha secreta" required>
+                        <input type="password" id="id_password" name="password" placeholder="Sua senha" required>
                     </div>
                 </div>
                 
@@ -62,7 +61,10 @@
                 Não tem uma conta? 
                 <a href="{% url 'auto_cadastro_paciente' %}">Crie agora</a>
             </p>
-            <p class="forgot-password-link"><a href="#">Esqueci minha senha</a></p>
+            <p class="forgot-password-link"><a href="{% url 'password_reset' %}" class="link-recuperar-senha">
+                Esqueci minha senha
+            </a>
+            </p>
         </div>
     </div>
 </div>

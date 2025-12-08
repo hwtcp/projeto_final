@@ -2,6 +2,7 @@ from django import forms
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.contrib.auth import get_user_model
 from .models import Medico, Paciente, Atendente, Especialidade
+import re
 
 Usuario = get_user_model()
 
@@ -37,13 +38,20 @@ class UsuarioForm(UserCreationForm):
             "data_nascimento": forms.DateInput(attrs={"type": "date"}),
         }
 
+def normalize_cpf(value: str) -> str:
+    """Remove tudo que não for dígito do CPF."""
+    if not value:
+        return ""
+    return re.sub(r"\D", "", value)
 
 class PacienteAutoCadastroForm(UserCreationForm):
+    cpf = forms.CharField(max_length=14, label="CPF",
+                          help_text="Digite o CPF (com ou sem pontuação).")
+
     class Meta:
         model = Usuario
         fields = [
             "nome_completo",
-            "username",
             "email",
             "cpf",
             "data_nascimento",
@@ -54,7 +62,6 @@ class PacienteAutoCadastroForm(UserCreationForm):
         ]
         labels = {
             "nome_completo": "Nome completo",
-            "username": "Nome de usuário",
             "email": "E-mail",
             "cpf": "CPF",
             "data_nascimento": "Data de Nascimento",
@@ -67,10 +74,33 @@ class PacienteAutoCadastroForm(UserCreationForm):
             "data_nascimento": forms.DateInput(attrs={"type": "date"}),
         }
 
+    def clean_cpf(self):
+        raw = self.cleaned_data.get("cpf", "")
+        cpf = normalize_cpf(raw)
+
+        # Validação básica de comprimento (11 dígitos)
+        if not cpf or len(cpf) != 11:
+            raise forms.ValidationError("CPF inválido. Deve conter 11 dígitos.")
+
+        # Verifica unicidade: tanto no campo cpf quanto no username (já que usaremos cpf como username)
+        if Usuario.objects.filter(cpf=cpf).exists() or Usuario.objects.filter(username=cpf).exists():
+            raise forms.ValidationError("Já existe uma conta cadastrada com este CPF.")
+
+        return cpf
+
     def save(self, commit=True):
+        # usa super para validar e configurar senha, mas não salva ainda
         user = super().save(commit=False)
+
+        # normaliza o CPF e define username = cpf (apenas dígitos)
+        cpf_normalizado = normalize_cpf(self.cleaned_data.get("cpf", ""))
+        user.username = cpf_normalizado
+        user.cpf = cpf_normalizado  # grava o cpf também (somente dígitos)
+        user.nome_completo = self.cleaned_data.get("nome_completo", "")
+        user.email = self.cleaned_data.get("email", "")
         user.tipo = "paciente"
         user.is_staff = False
+
         if commit:
             user.save()
         return user
@@ -208,15 +238,18 @@ def validar_cpf(cpf):
 class PerfilForm(forms.ModelForm):
     def clean_foto(self):
         foto = self.cleaned_data.get("foto")
-
+        if foto is False:
+            return None  
         if foto:
             if foto.size > 5 * 1024 * 1024:
                 raise forms.ValidationError("A imagem não pode ultrapassar 5MB.")
 
-            valid_types = ["image/jpeg", "image/png"]
-            if foto.content_type not in valid_types:
-                raise forms.ValidationError("Envie apenas imagens JPEG ou PNG.")
-
+            try:
+                valid_types = ["image/jpeg", "image/png"]
+                if foto.content_type not in valid_types:
+                    raise forms.ValidationError("Envie apenas imagens JPEG ou PNG.")
+            except AttributeError:
+                pass
         return foto
 
     class Meta:

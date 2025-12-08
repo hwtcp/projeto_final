@@ -1,0 +1,65 @@
+{% extends 'base_dashboard.html' %}
+{% load static %}
+
+{% block dashboard_content %}
+<div class="consulta-page-header">
+    <h1>Minhas Próximas Consultas</h1>
+    <p>Visualize, confira e gerencie seus agendamentos.</p>
+</div>
+
+<div class="consulta-list-container">
+    {% for consulta in consultas %}
+    <div class="consulta-card">
+        <div class="card-header">
+            <span class="consulta-date">
+                <i class="fas fa-calendar-alt"></i> 
+                {{ consulta.data_hora_inicio|date:"d/m/Y" }}
+            </span>
+            <span class="consulta-time">
+                <i class="fas fa-clock"></i> 
+                {{ consulta.data_hora_inicio|time:"H:i" }}
+            </span>
+        </div>
+
+        <div class="card-body">
+            <div class="medico-info">
+                <img src="{% static consulta.medico.usuario.foto.url|default:'images/default_medico.png' %}" 
+                     alt="Foto do Dr(a). {{ consulta.medico.usuario.nome_completo }}" 
+                     class="medico-photo">
+                <div class="medico-details">
+                    <p class="medico-name">Dr(a). {{ consulta.medico.usuario.nome_completo }}</p>
+                    <p class="medico-specialty">{{ consulta.medico.especialidade.nome }}</p> 
+                </div>
+            </div>
+
+            <div class="consulta-details">
+                <div class="detail-item">
+                    <i class="fas fa-hospital"></i>
+                    <span>Contato: {{ consulta.medico.usuario.telefone|default:'Não Informado' }}</span> 
+                </div>
+                <div class="detail-item">
+                    <i class="fas fa-notes-medical"></i>
+                    <span>Sintomas: {{ consulta.sintomas|default:'Nenhum sintoma registrado.'|truncatechars:30 }}</span>
+                </div>
+                <div class="status-badge status-{{ consulta.status }}">
+                    Status: {{ consulta.get_status_display }}
+                </div>
+            </div>
+        </div>
+        
+        <div class="card-actions">
+            <a href="{% url 'detalhes_consulta' consulta.id %}" class="btn-detail">Detalhes</a>
+            
+            {% if consulta.status == 'agendada' %}
+            <button class="btn-cancel"><i class="fas fa-times"></i> Cancelar</button>
+            {% endif %}
+        </div>
+    </div>
+    {% empty %}
+    <p class="no-consultas">
+        <i class="fas fa-check-circle"></i>
+        Parabéns! Você não possui consultas futuras agendadas.
+    </p>
+    {% endfor %}
+</div>
+{% endblock dashboard_content %}

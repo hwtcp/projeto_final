@@ -1,0 +1,114 @@
+{% extends 'base_dashboard.html' %}
+{% load static %}
+
+{% block dashboard_content %}
+<div class="detalhes-container">
+    <div class="detalhes-card-wrapper">
+        <div class="detalhes-card">
+            <div class="header-details">
+                <h1>Detalhes da Consulta</h1>
+                <div class="status-badge status-{{ consulta.status }}">
+                    Status: {{ consulta.get_status_display }}
+                </div>
+            </div>
+
+            <div class="section-block">
+                <h3><i class="fas fa-user-md"></i> Médico e Paciente</h3>
+                
+                <div class="info-group profile-group">
+                    <div class="profile-item">
+                        <img src="{% static consulta.medico.foto.url|default:'images/default_medico.png' %}" 
+                             alt="Foto do Médico" 
+                             class="detail-photo">
+                        <div class="profile-text">
+                            <h4>Dr(a). {{ consulta.medico.usuario.nome_completo }}</h4>
+                            <p class="specialty-text">{{ consulta.medico.especialidade.nome }}</p>
+                            <p class="secondary-text">CRM: {{ consulta.medico.crm }}</p>
+                        </div>
+                    </div>
+                    
+                    <div class="profile-item">
+                        {% with foto_paciente=consulta.paciente.usuario.foto %}
+                            {% if foto_paciente %}
+                                <img src="{{ foto_paciente.url }}" 
+                                    alt="Foto do Paciente" 
+                                    class="detail-photo">
+                            {% else %}
+                                <img src="{% static 'images/default_paciente.png' %}" 
+                                    alt="Foto padrão do Paciente" 
+                                    class="detail-photo">
+                            {% endif %}
+                        {% endwith %}
+
+                        <div class="profile-text">
+                            <h4>Paciente: {{ consulta.paciente.usuario.nome_completo }}</h4>
+                            <p class="secondary-text">CPF: {{ consulta.paciente.usuario.username }}</p>
+                            <p class="secondary-text">Contato: {{ consulta.paciente.usuario.telefone|default:'Não Informado' }}</p>
+                        </div>
+                    </div>>
+                </div>
+            </div>
+
+            <hr>
+
+            <div class="section-block">
+                <h3><i class="fas fa-calendar-check"></i> Agendamento</h3>
+                
+                <div class="info-group">
+                    <div class="detail-item-line">
+                        <span class="detail-label"><i class="fas fa-calendar-alt"></i> Data:</span>
+                        <span class="detail-value">{{ consulta.data_hora_inicio|date:"d/m/Y" }}</span>
+                    </div>
+                    <div class="detail-item-line">
+                        <span class="detail-label"><i class="fas fa-clock"></i> Hora de Início:</span>
+                        <span class="detail-value">{{ consulta.data_hora_inicio|time:"H:i" }}</span>
+                    </div>
+                    <div class="detail-item-line">
+                        <span class="detail-label"><i class="fas fa-history"></i> Hora de Fim Prevista:</span>
+                        <span class="detail-value">{{ consulta.data_hora_fim|default:'N/A'|time:"H:i" }}</span>
+                    </div>
+                    <div class="detail-item-line">
+                        <span class="detail-label"><i class="fas fa-sync"></i> Retorno:</span>
+                        <span class="detail-value">{{ consulta.retorno|yesno:"Sim, Não" }}</span>
+                    </div>
+                </div>
+            </div>
+
+            <hr>
+
+            <div class="section-block">
+                <h3><i class="fas fa-stethoscope"></i> Informações Clínicas</h3>
+                
+                <div class="info-group">
+                    <div class="clinical-box">
+                        <h4>Sintomas Relatados:</h4>
+                        <p class="clinical-text">{{ consulta.sintomas|default:'Nenhum sintoma registrado.' }}</p>
+                    </div>
+                    <div class="clinical-box">
+                        <h4>Diagnóstico (Após a Consulta):</h4>
+                        <p class="clinical-text">{{ consulta.diagnostico|default:'Diagnóstico ainda não registrado.' }}</p>
+                    </div>
+                    
+                    {% if consulta.receita_virtual %}
+                    <div class="clinical-box">
+                        <h4>Receita / Documentos:</h4>
+                        <a href="{{ consulta.receita_virtual.url }}" target="_blank" class="btn-download">
+                            <i class="fas fa-file-download"></i> Visualizar Receita
+                        </a>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+
+            <div class="card-actions-detalhes">
+                <a href="{% url 'minhas_consultas_paciente' %}" class="btn-voltar">
+                    <i class="fas fa-arrow-left"></i> Voltar para Consultas
+                </a>
+                {% if consulta.status == 'agendada' %}
+                    <button class="btn-cancelar-grande"><i class="fas fa-times"></i> Cancelar Agendamento</button>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock dashboard_content %}
